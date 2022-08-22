@@ -2,11 +2,12 @@
  * Couldn't destructure path for some reason?
  */
 
-// const { db, 
-//   // models: { User }, 
-// } = require("../server/_db");
+// const { 
+//   db: { db }, 
+//     models: { User } 
+//  } = require("../server/_db");
 
-const db = require("../server/_db/db");
+const { db, testDb } = require("../server/_db/db");
 const User = require("../server/_db/models/User");
 
 /*

@@ -1,6 +1,13 @@
+const { expect } = require("chai");
+
+
 describe("Data Layer", ()=> {
-  describe("users", ()=> {
-    it("An email with 1 password", ()=>{
+  describe("seeded data", ()=> {
+    it("There are 2 users", ()=>{
+
+    });
+
+    it("Cody has an email and password", ()=>{
       
     });
   });

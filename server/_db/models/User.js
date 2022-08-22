@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 const { STRING, UUID, UUIDV4 } = Sequelize;
-const db = require("../db");
+const { db } = require("../db");
 
 const User = db.define("user", {
   id: {
