@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha spec.js",
-    "test:dev": "npm test -- --watch",
+    "seed": " node script/seed.js",
     "start": "nodemon server/index.js",
-    "seed": " node script/seed.js"
+    "test": " NODE_ENV=test mocha \"./server/**/**/*.spec.js\"",
+    "test:dev": "npm test -- --watch"
   },
   "keywords": [],
   "author": "James Flanary",
