@@ -1,4 +1,4 @@
-# Welcome!
+`# Welcome!
 
 zoneTwo is a work in progress
 
@@ -11,6 +11,7 @@ Current Features
 Developer:
 
 - Db Layer for login authentication (email/password)
+- DB Layer for workouts (name/description/data)
 - Tests for Db Layer
 
 User:
