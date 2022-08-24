@@ -11,7 +11,7 @@ Current Features
 Developer:
 
 - Db Layer for login authentication (email/password)
-- DB Layer for workouts (name/description/data)
+- Db Layer for workouts (name/description/data)
 - Tests for Db Layer
 
 User:
