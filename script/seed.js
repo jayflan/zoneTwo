@@ -9,6 +9,7 @@
 
 const db = require("../server/_db/db");
 const User = require("../server/_db/models/User");
+const Workout = require("../server/_db/models/Workout");
 
 /*
  * seed - this function clears the database, 
@@ -26,12 +27,20 @@ async function seed() {
     User.create({ email: 'cody@gmail.com', password: 'cody123' }),
     User.create({ email: 'murphy@msn.com', password: 'murphy123' })
   ]);
+//Creating Workouts
+  const workouts = await Promise.all([
+    Workout.create({name: 'Workout #1', description: 'Best workout ever', data: {heartrate: 180, speed: 10}}),
+    Workout.create({name: 'Workout #2', description: 'Best workout ever', data: {heartrate: 150, speed: 15}})
+  ]);
+
   console.log(`seeded ${users.length} users`);
+  console.log(`seeded ${workouts.length} workouts`);
 
   // Finished Return
   console.log('successfully seeded');
   return {
-    users
+    users,
+    workouts
   };
   
 };
