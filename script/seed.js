@@ -7,7 +7,7 @@
 //     models: { User } 
 //  } = require("../server/_db");
 
-const { db, testDb } = require("../server/_db/db");
+const db = require("../server/_db/db");
 const User = require("../server/_db/models/User");
 
 /*
