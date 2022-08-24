@@ -8,5 +8,6 @@ module.exports = {
   db,
   models: {
     User,
+    Workout,
   },
 };
