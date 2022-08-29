@@ -1,15 +1,7 @@
-/**
- * Couldn't destructure path for some reason?
- */
-
-// const { 
-//   db: { db }, 
-//     models: { User } 
-//  } = require("../server/_db");
-
-const db = require("../server/_db/db");
-const User = require("../server/_db/models/User");
-const Workout = require("../server/_db/models/Workout");
+const { 
+  db, 
+  models: { User, Workout } 
+ } = require("../server/_db");
 
 /*
  * seed - this function clears the database, 
