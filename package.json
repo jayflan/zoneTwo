@@ -7,7 +7,9 @@
     "seed": " node script/seed.js",
     "start": "nodemon server/index.js",
     "test": " NODE_ENV=test mocha \"./server/**/**/*.spec.js\"",
-    "test:dev": "npm test -- --watch"
+    "test:logger": "LOGGING=true NODE_ENV=test mocha \"./server/**/**/*.spec.js\"",
+    "test:dev": "npm test -- --watch",
+    "test:dev:logger": "npm test:logger -- --watch"
   },
   "keywords": [],
   "author": "James Flanary",
