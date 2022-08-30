@@ -22,6 +22,9 @@ describe('Workout Model', ()=> {
       it('First workout has data uploaded', async()=> {
         expect(workouts[0].data).to.be.ok;
       });
+      it('First workout to have user', async()=> {
+        expect(workouts[0].userId).to.be.ok;
+      });
     });
   });
 
