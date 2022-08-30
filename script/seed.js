@@ -1,6 +1,6 @@
 const { 
   db, 
-  models: { User, Workout } 
+  models: { User, Workout, Bike, } 
  } = require("../server/_db");
 
 /*
@@ -19,20 +19,30 @@ async function seed() {
     User.create({ email: 'cody@gmail.com', password: 'cody123' }),
     User.create({ email: 'murphy@msn.com', password: 'murphy123' })
   ]);
+// Isolate recently created users for userId properties
+  const cody = await User.findOne({where: {email: "cody@gmail.com"}});
+  const murphy = await User.findOne({where: {email: "murphy@msn.com"}});
 //Creating Workouts
   const workouts = await Promise.all([
-    Workout.create({name: 'Workout #1', description: 'Best workout ever', data: {heartrate: 180, speed: 10}}),
-    Workout.create({name: 'Workout #2', description: 'Best workout ever', data: {heartrate: 150, speed: 15}})
+    Workout.create({name: 'Workout #1', description: 'Best workout ever', data: {heartrate: 180, speed: 10}, userId: cody.id}),
+    Workout.create({name: 'Workout #2', description: 'Best workout ever', data: {heartrate: 150, speed: 15}, userId: murphy.id})
+  ]);
+//Creating Bikes
+  const bikes = await Promise.all([
+    Bike.create({name: 'Fuji SL', mileage: 100, userId: cody.id}),
+    Bike.create({name: 'YT Jeffsy', mileage: 150, userId: murphy.id})
   ]);
 
   console.log(`seeded ${users.length} users`);
   console.log(`seeded ${workouts.length} workouts`);
+  console.log(`seeded ${bikes.length} bikes`)
 
   // Finished Return
   console.log('successfully seeded');
   return {
     users,
-    workouts
+    workouts,
+    bikes
   };
   
 };
