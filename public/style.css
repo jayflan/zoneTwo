@@ -2,3 +2,18 @@ h2 {
   display: flex;
   justify-content: center;
 }
+
+/* .footer {
+  border: solid blue;
+}
+
+.navbar {
+  height: auto;
+  border: solid blue;
+  display: flex;
+  justify-content:space-between;
+}
+
+.routes {
+  border: solid blue;
+} */
