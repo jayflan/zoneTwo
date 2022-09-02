@@ -1,7 +1,8 @@
-h2 {
+
+/* h2 {
   display: flex;
   justify-content: center;
-}
+} */
 
 /* .footer {
   border: solid blue;
@@ -17,3 +18,15 @@ h2 {
 .routes {
   border: solid blue;
 } */
+
+@media (max-width: 1024px ) {
+  #landing {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 800px ) {
+  #footer {
+    flex-direction: column;
+  }
+}
