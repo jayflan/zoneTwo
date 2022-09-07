@@ -1,5 +1,6 @@
 import { Box, Center, Divider, Flex, VStack, Image, Text, Button } from "@chakra-ui/react";
 import React from "react";
+import Footer from "./Footer"
 
 
 const Landing = () => {
@@ -20,6 +21,7 @@ const Landing = () => {
           <Box m='10' bg='gray.500'></Box>
         </Box> */}
       </Flex>
+      <Footer/>
     </div>
   );
 };
