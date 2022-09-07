@@ -26,6 +26,7 @@
     "framer-motion": "^7.2.1",
     "morgan": "^1.10.0",
     "pg": "^8.7.3",
+    "react-router-dom": "^6.3.0",
     "sequelize": "^6.21.3",
     "supertest": "^6.2.4"
   },
