@@ -13,21 +13,19 @@ const LogIn = () => {
         <Center mt="20" mb="80">
           <Box bg="blackAlpha.600">
             <Center as="h1" bg="blackAlpha.500" p="4">
-              <Text /*noOfLines={[1,2]}*/ fontSize="4xl" color="white">
-                Log In
+              <Text fontSize="4xl" color="white">
+                Sign up today, it's Free
               </Text>
             </Center>
             <VStack spacing='10' p='4'>
-              <Button w='300px' borderRadius='0'>Log In using Google</Button>
-              <Button w='300px' borderRadius='0'>Log In using Apple</Button>
-              <Text /*noOfLines={[1,2]}*/ fontSize="xl" color="white">
-                Or log in with email
-              </Text>
+              <Button w='300px' borderRadius='0'>Sign Up with Google</Button>
+              <Button w='300px' borderRadius='0'>Sign Up with Apple</Button>
+              <Divider orientation="horizontal" w='300px'></Divider>
               <Button w='300px' borderRadius='0'>Use my email</Button>
             </VStack>
             <Center bg="blackAlpha.500" p="4">
-              <Text fontSize="m" color="white">
-                <Link to="/landing">Forget your password?</Link>
+              <Text fontSize="xl" color="white">
+                Already a member?   <Link to="/login">LogIn</Link>
               </Text>
             </Center>
           </Box>
