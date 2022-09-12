@@ -1,16 +1,38 @@
 import { Box, Center, Divider, Flex, VStack, Image, Text, Button } from "@chakra-ui/react";
 import React from "react";
+import { Link } from "react-router-dom";
 
 
 const LogIn = () => {
   return(
     <div>
-      
       <Flex
-        alignItems='center'
-        justifyContent='center'
-        bg="red"
-      >Test Box</Flex>
+        bgImage="url('_img/roadBike.jpg')"
+        direction='column'
+      >
+        <Center mt="20" mb="80">
+          <Box bg="blackAlpha.600">
+            <Center as="h1" bg="blackAlpha.500" p="4">
+              <Text /*noOfLines={[1,2]}*/ fontSize="4xl" color="white">
+                Log In
+              </Text>
+            </Center>
+            <VStack spacing='10' p='4'>
+              <Button w='300px' borderRadius='0'>Log In using Google</Button>
+              <Button w='300px' borderRadius='0'>Log In using Apple</Button>
+              <Text /*noOfLines={[1,2]}*/ fontSize="xl" color="white">
+                Or log in with email
+              </Text>
+              <Button w='300px' borderRadius='0'>Use my email</Button>
+            </VStack>
+            <Center bg="blackAlpha.500" p="4">
+              <Text fontSize="m" color="white">
+                <Link to="/landing">Forget your password?</Link>
+              </Text>
+            </Center>
+          </Box>
+        </Center>
+      </Flex>
 
       {/* <Box
         w="100px"
