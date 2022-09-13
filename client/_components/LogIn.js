@@ -18,11 +18,11 @@ const LogIn = () => {
                 Log In
               </Text>
             </Center>
-            <VStack spacing='10' p='4'>
+            <VStack spacing='10' p='4' mt="4" mb="4">
               <PrimaryButton w='300px'>Log In using Google</PrimaryButton>
               <PrimaryButton w='300px'>Log In using Apple</PrimaryButton>
-              <Text /*noOfLines={[1,2]}*/ fontSize="xl" color="white">
-                Or log in with email
+              <Text /*noOfLines={[1,2]}*/ color="gray.400">
+                Or log in with your email
               </Text>
               <SecondaryButton w='300px'>Use my email</SecondaryButton>
             </VStack>
