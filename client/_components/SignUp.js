@@ -1,10 +1,34 @@
-import { Box, Center, Divider, Flex, VStack, Image, Text, Button } from "@chakra-ui/react";
-import React from "react";
+import { Box, Center, Divider, Flex, FormControl, VStack, Image, Text, Button, Input } from "@chakra-ui/react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { PrimaryButton, SecondaryButton } from "./styles/index";
 
 
-const LogIn = () => {
+const SignUp = () => {
+
+//<------------------------------ hooks ------------------------------>//
+
+//create local state hook for email & password input handling
+const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
+
+//<------------------------------ event & error handling ------------------------------>//
+
+const handleEmailChange = (event) => {
+  setEmail(event);
+};
+
+const handlePasswordChange = (event) => {
+  setPassword(event);
+};
+
+// const handlePasswordChange = (event) => {
+//   // setState.password(event);
+// };
+
+
+
+
   return(
     <div>
       <Flex
@@ -12,20 +36,37 @@ const LogIn = () => {
         direction='column'
       >
         <Center mt="20" mb="80">
-          <Box bg="blackAlpha.600">
-            <Center as="h1" bg="blackAlpha.500" p="4">
+          <Box bg="blackAlpha.600" borderRadius="sm">
+            <Center as="h1" bg="blackAlpha.500" p="4" borderRadius="sm">
               <Text fontSize="4xl" color="white">
                 Sign up today, it's Free
               </Text>
             </Center>
-            <VStack spacing='10' p='4'>
+            <VStack spacing='5' p='4' mt="4" mb="4">
               <PrimaryButton w='300px'>Sign Up with Google</PrimaryButton>
               <PrimaryButton w='300px'>Sign Up with Apple</PrimaryButton>
-              <Divider orientation="horizontal" w='300px'></Divider>
-              <SecondaryButton w='300px'>Use my email</SecondaryButton>
+              <Text color="gray.400">or sign up with your email address</Text>
+
+              <FormControl>
+                <Center>
+                  <Input w="300px" color="white" placeholder="Email" _placeholder={{color: "white"}}
+                    onChange={(e)=>handleEmailChange(e.target.value)}
+                  ></Input>
+                </Center>
+              </FormControl>
+
+              <FormControl>
+                <Center>
+                  <Input w="300px" color="white" placeholder="Password" _placeholder={{color: "white"}}
+                    onChange={(e)=>handlePasswordChange(e.target.value)}
+                  ></Input>
+                </Center>
+              </FormControl>
+
+              <SecondaryButton w='300px' onClick={()=>{console.log(email, password)}}>Sign Up</SecondaryButton>
             </VStack>
             <Center bg="blackAlpha.500" p="4">
-              <Text fontSize="xl" color="white">
+              <Text fontSize="m" color="white">
                 Already a member?   <Link to="/login">LogIn</Link>
               </Text>
             </Center>
@@ -92,4 +133,4 @@ const LogIn = () => {
   );
 };
 
-export default LogIn;
+export default SignUp;
