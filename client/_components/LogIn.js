@@ -1,6 +1,7 @@
 import { Box, Center, Divider, Flex, VStack, Image, Text, Button } from "@chakra-ui/react";
 import React from "react";
 import { Link } from "react-router-dom";
+import { PrimaryButton, SecondaryButton } from "./styles/index";
 
 
 const LogIn = () => {
@@ -11,19 +12,19 @@ const LogIn = () => {
         direction='column'
       >
         <Center mt="20" mb="80">
-          <Box bg="blackAlpha.600">
-            <Center as="h1" bg="blackAlpha.500" p="4">
+          <Box bg="blackAlpha.600" borderRadius="sm">
+            <Center as="h1" bg="blackAlpha.500" p="4" borderRadius="sm">
               <Text /*noOfLines={[1,2]}*/ fontSize="4xl" color="white">
                 Log In
               </Text>
             </Center>
             <VStack spacing='10' p='4'>
-              <Button w='300px' borderRadius='0'>Log In using Google</Button>
-              <Button w='300px' borderRadius='0'>Log In using Apple</Button>
+              <PrimaryButton w='300px'>Log In using Google</PrimaryButton>
+              <PrimaryButton w='300px'>Log In using Apple</PrimaryButton>
               <Text /*noOfLines={[1,2]}*/ fontSize="xl" color="white">
                 Or log in with email
               </Text>
-              <Button w='300px' borderRadius='0'>Use my email</Button>
+              <SecondaryButton w='300px'>Use my email</SecondaryButton>
             </VStack>
             <Center bg="blackAlpha.500" p="4">
               <Text fontSize="m" color="white">

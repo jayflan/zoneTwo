@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Box, Flex, Button, Text } from "@chakra-ui/react";
+import SecondaryButton from "./styles/SecondaryButton";
 
 const Navbar = () => {
 
@@ -17,15 +18,15 @@ const Navbar = () => {
           {/*LogIn / LogOut / SignUp button path toggle*/}
            {location.pathname === '/login' ?
             <Link to="/signup">
-              <Button as='button' m='5' mr='10'>SignUp</Button>
+              <SecondaryButton m='5' mr='10'>SignUp</SecondaryButton>
             </Link> : '' }
             {location.pathname === '/signup' || location.pathname === '/landing' ?
             <Link to="/login">
-              <Button as='button' m='5' mr='10'>Login</Button>
+              <SecondaryButton m='5' mr='10'>Login</SecondaryButton>
             </Link> : '' }
             {isLoggedIn ?
             <Link to="/landing">
-              <Button as='button' m='5' mr='10'>LogOut</Button>
+              <SecondaryButton m='5' mr='10'>LogOut</SecondaryButton>
             </Link> : '' }
 
         </Flex>

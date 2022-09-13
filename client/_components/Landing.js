@@ -1,6 +1,7 @@
 import { Box, Center, Divider, Flex, VStack, Image, Text, Button } from "@chakra-ui/react";
 import React from "react";
 import Footer from "./Footer"
+import { PrimaryButton, SecondaryButton } from "./styles/index";
 
 
 const Landing = () => {
@@ -8,18 +9,15 @@ const Landing = () => {
     <div>
       <Center as='h1' p='10'><Text as='b' fontSize='xl'>The #1 app for this cyclist</Text></Center>
       <Flex id='landing'>
-        <Box bg='gray.100' h='full' w='full'>
-          <Image src='_img/roadBike.jpg' alt='Cycling'/>
+        <Box h='full' w='full'>
+          <Image src='_img/roadBike.jpg' alt='Cycling' borderRadius="sm"/>
         </Box>
         <VStack mt='20' w='full' spacing='10'>
-          <Button w='300px' borderRadius='0'>Sign Up with Google</Button>
-          <Button w='300px' borderRadius='0'>Sign Up with Apple</Button>
+          <PrimaryButton w='300px'>Sign Up with Google</PrimaryButton>
+          <PrimaryButton w='300px'>Sign Up with Apple</PrimaryButton>
           <Divider orientation="horizontal" w='300px'></Divider>
-          <Button w='300px' borderRadius='0'>Use my email</Button>
+          <SecondaryButton w='300px'>Use my email</SecondaryButton>
         </VStack>
-        {/* <Box bg='gray.100' w='full'>
-          <Box m='10' bg='gray.500'></Box>
-        </Box> */}
       </Flex>
       <Footer/>
     </div>
