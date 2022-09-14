@@ -49,7 +49,7 @@ const handlePasswordChange = (event) => {
 
               <FormControl>
                 <Center>
-                  <Input w="300px" color="white" placeholder="Email" _placeholder={{color: "white"}}
+                  <Input w="300px" color="white" placeholder="Email" _placeholder={{color: "white.100"}}
                     onChange={(e)=>handleEmailChange(e.target.value)}
                   ></Input>
                 </Center>
@@ -57,7 +57,7 @@ const handlePasswordChange = (event) => {
 
               <FormControl>
                 <Center>
-                  <Input w="300px" color="white" placeholder="Password" _placeholder={{color: "white"}}
+                  <Input w="300px" color="white" placeholder="Password" _placeholder={{color: "white.100"}}
                     onChange={(e)=>handlePasswordChange(e.target.value)}
                   ></Input>
                 </Center>
