@@ -15,6 +15,10 @@ module.exports = {
         options: {
           presets: [
             '@babel/preset-react'
+          ],
+          plugins: [
+            "@babel/plugin-transform-modules-commonjs",
+            "inline-react-svg"
           ]
         }
       }
