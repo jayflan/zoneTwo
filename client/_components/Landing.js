@@ -1,10 +1,18 @@
-import { Box, Center, Divider, Flex, VStack, Image, Text, Button } from "@chakra-ui/react";
-import React from "react";
+import { Box, Center, Divider, Flex, VStack, Image, Text } from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import Footer from "./Footer"
 import { PrimaryButton, SecondaryButton } from "./styles/index";
-
+import { getUsers } from "../_store/users";
 
 const Landing = () => {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUsers());
+  }, []);
+
   return(
     <div>
       <Center as='h1' p='10'><Text as='b' fontSize='xl'>The #1 app for this cyclist</Text></Center>
