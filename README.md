@@ -13,23 +13,22 @@ Developer:
 - Db Layer for login authentication (email/password)
 - Db Layer for workouts (name/description/data)
 - Tests for Db Layer
+- Tests for React Framework
 
 User:
 
-- N/A
+- Landing page
+- Login page
 
 Future Features
 
 Developer:
 
 - Tests for JWT Login
-- Tests for React Framework
 - Tests for React Router
 
 User:
 
-- Landing page
-- Login page
 - Login via JSON Web Token
 - Login via OAuth (Google)
 - User overview page
