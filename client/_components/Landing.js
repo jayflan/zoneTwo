@@ -3,15 +3,8 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Footer from "./Footer"
 import { PrimaryButton, SecondaryButton } from "./styles/index";
-import { getUsers } from "../_store/users";
 
 const Landing = () => {
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getUsers());
-  }, []);
 
   return(
     <div>
