@@ -1,0 +1,211 @@
+JWT Authentication Flow
+
+Serverside = S
+Clientside = C
+
+Story of Flow
+
+C - User enters login credentials & event/click sends credentials to auth store - auth.js
+
+  /**
+  * ACTION TYPES
+  */
+  const SET_AUTH = "SET_AUTH";
+  /**
+  * ACTION CREATORS
+  */
+  const setAuth = (auth) => ({ type: SET_AUTH, auth });
+  /**
+  * THUNK CREATORS
+  */
+  export const me = (products) => async (dispatch) => {
+    const token = window.localStorage.getItem(TOKEN);
+    if (token) {
+      const { data: user } = await axios.get("/auth/me", {
+        headers: {
+          authorization: token,
+        },
+      });
+  export const authenticate =
+    (email, password, firstName, lastName, method) => async (dispatch) => {
+      try {
+        const res = await axios.post(`/auth/${method}`, {
+          email,
+          password,
+          firstName,
+          lastName,
+        });
+        window.localStorage.setItem(TOKEN, res.data.token);
+        dispatch(me());
+        // history.push("/");
+      } catch (authError) {
+        return dispatch(setAuth({ error: authError }));
+      }
+    };
+  export const logout = () => {
+    return async (dispatch) => {
+      window.localStorage.removeItem(TOKEN);
+      await axios.get("/logout");
+      history.push("/");
+      dispatch(_logout());
+      dispatch(fetchCart({}));
+    };
+  };
+  export const updateUser = (user, id) => {
+    const token = window.localStorage.getItem(TOKEN);
+    return async (dispatch) => {
+      const { data: updatedUser } = await axios.put(`/api/users/${id}`, {
+        user,
+        token,
+      });
+      dispatch(_updateUser(updatedUser));
+    };
+  };
+
+  /**
+  * REDUCER
+  */
+  export default function (state = {}, action) {
+    switch (action.type) {
+      case SET_AUTH:
+        return action.auth;
+      case UPDATE_USER:
+        const newUser = { ...state, ...action.auth };
+        return newUser;
+      default:
+        return state;
+    }
+  }
+
+S - Auth store sends authentication/credentials to backend route - index.js (express routing)
+
+  const router = require("express").Router();
+  const {
+    models: { User },
+  } = require("../db");
+  const app = require("../app");
+  module.exports = router;
+
+  router.get("/logout", (req, res) => {
+  req.logout();
+  res.redirect("/");
+  });
+
+  router.post("/login", async (req, res, next) => {
+  try {
+    res.send({ token: await User.authenticate(req.body) });
+  } catch (err) {
+    next(err);
+  }
+  });
+
+  router.post("/signup", async (req, res, next) => {
+  try {
+    const user = await User.create(req.body);
+    res.send({ token: await user.generateToken() });
+  } catch (err) {
+    if (err.name === "SequelizeUniqueConstraintError") {
+      res.status(401).send("User already exists");
+    } else {
+      next(err);
+    }
+  }
+  });
+
+  router.get("/me", async (req, res, next) => {
+  try {
+    res.send(await User.findByToken(req.headers.authorization));
+  } catch (ex) {
+    next(ex);
+  }
+  });
+
+  S - Auth express routing sends credentials to DB (User) - User.js (Model)
+
+    const Sequelize = require("sequelize");
+  const { STRING, ENUM, UUID, UUIDV4 } = Sequelize;
+  const db = require("../db");
+  const jwt = require("jsonwebtoken");
+  const bcrypt = require("bcrypt");
+
+  const SALT_ROUNDS = 5;
+
+  const User = db.define("user", {
+    id: {
+      type: UUID,
+      defaultValue: UUIDV4,
+      allowNull: false,
+      primaryKey: true,
+    },
+    passportId: {
+      type: STRING,
+    },
+    email: {
+      type: STRING,
+      unique: true,
+      allowNull: false,
+      validate: {
+        isEmail: true,
+      },
+    },
+    password: {
+      type: STRING,
+    }
+  };
+
+  module.exports = User;
+
+  /**
+  * instanceMethods
+  */
+  User.prototype.correctPassword = function (candidatePwd) {
+    //we need to compare the plain version to an encrypted version of the password
+    return bcrypt.compare(candidatePwd, this.password);
+  };
+
+  User.prototype.generateToken = function () {
+    return jwt.sign({ id: this.id }, process.env.JWT);
+  };
+
+  /**
+  * classMethods
+  */
+  User.authenticate = async function ({ email, password }) {
+    const user = await this.findOne({ where: { email } });
+    if (!user || !(await user.correctPassword(password))) {
+      const error = Error("Incorrect username/password");
+      error.status = 401;
+      throw error;
+    }
+    return user.generateToken();
+  };
+
+  User.findByToken = async function (token) {
+    try {
+      const { id } = await jwt.verify(token, process.env.JWT);
+      const user = User.findByPk(id);
+      if (!user) {
+        throw "nooo";
+      }
+      return user;
+    } catch (ex) {
+      const error = Error("bad token");
+      error.status = 401;
+      throw error;
+    }
+  };
+
+  /**
+  * hooks
+  */
+  const hashPassword = async (user) => {
+    //in case the password has been changed, we want to encrypt it with bcrypt
+    if (user.changed("password")) {
+      user.password = await bcrypt.hash(user.password, SALT_ROUNDS);
+    }
+  };
+
+  User.beforeCreate(hashPassword);
+  User.beforeUpdate(hashPassword);
+  User.beforeBulkCreate((users) => Promise.all(users.map(hashPassword)));
+
