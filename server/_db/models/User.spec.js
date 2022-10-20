@@ -33,10 +33,11 @@ describe('User Model', ()=> {
         expect(userToken).to.be.ok;
       });
       it("User authenticated via JWT token", async()=> {
-        const userEmail = users[0].email;
-        const userPassword = users[0].password;
+        //using first created user from seed.js
+        const userEmail = 'cody@gmail.com';
+        const userPassword = 'cody123';
         const userAuthToken = User.authenticate({ email: userEmail, password: userPassword});
-        expect(userAuthToken).to.be.ok;
+        expect(await userAuthToken).to.be.ok;
       });
       it("User located via JWT token", async()=> {
         const userToken = users[0].generateToken();
