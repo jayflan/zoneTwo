@@ -16,6 +16,7 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 // api/router
 app.use("/api", require("./_api"));
 //auth routes
+app.use("/auth", require("./_auth"));
 //index html catch path (sends all other requests to there)
 app.use("*", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "public/index.html"));
