@@ -8,6 +8,7 @@ const ReactRoutes = () => {
   return(
     <div>
       <Routes>
+        <Route exact path='/' element={<Landing/>}/>
         <Route exact path='landing' element={<Landing/>}/>
         <Route exact path="login" element={<LogIn/>}/>
         <Route exact path="signup" element={<SignUp/>}/>

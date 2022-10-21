@@ -20,7 +20,7 @@ const Navbar = () => {
             <Link to="/signup">
               <SecondaryButton m='5' mr='10'>SignUp</SecondaryButton>
             </Link> : '' }
-            {location.pathname === '/signup' || location.pathname === '/landing' ?
+            {location.pathname === '/signup' || location.pathname === '/landing' || location.pathname === '/' ?
             <Link to="/login">
               <SecondaryButton m='5' mr='10'>Login</SecondaryButton>
             </Link> : '' }

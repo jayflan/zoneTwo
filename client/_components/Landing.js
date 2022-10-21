@@ -1,5 +1,6 @@
 import { Box, Center, Divider, Flex, VStack, Image, Text } from "@chakra-ui/react";
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Footer from "./Footer"
 import { PrimaryButton, SecondaryButton } from "./styles/index";
@@ -17,7 +18,9 @@ const Landing = () => {
           <PrimaryButton w='300px'>Sign Up with Google</PrimaryButton>
           <PrimaryButton w='300px'>Sign Up with Apple</PrimaryButton>
           <Divider orientation="horizontal" w='300px'></Divider>
-          <SecondaryButton w='300px'>Use my email</SecondaryButton>
+          <Link to="/signup">
+            <SecondaryButton w='300px'>Sign Up with email</SecondaryButton>
+          </Link>
         </VStack>
       </Flex>
       <Footer/>
