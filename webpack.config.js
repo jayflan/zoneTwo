@@ -1,6 +1,7 @@
 const Dotenv = require("dotenv-webpack");
 
 module.exports = {
+  devtool: "source-map",
   plugins: [
     new Dotenv()
   ],
@@ -8,6 +9,7 @@ module.exports = {
     "./client/index.js"
   ],
   output: {
+    sourceMapFilename: "public/bundle.js.map",
     path: __dirname,
     filename: "public/bundle.js"
   },
@@ -30,3 +32,4 @@ module.exports = {
     ]
   }
 };
+  
