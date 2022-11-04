@@ -1,47 +1,26 @@
 // import { Box, Center, Divider, Flex, VStack, Image, Text, Button, Input } from "@chakra-ui/react";
 import { Box, Center, Divider, Flex, FormControl, VStack, Image, Text, Button, Input } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector, useStore } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { PrimaryButton, SecondaryButton } from "./styles/index";
-import { authenticate, me } from "../_store/auth";
+import { auth, authenticate, me } from "../_store/auth";
 
-const LogIn = () => {
+
+const Dashboard = () => {
   
-//<------------------------------ hooks ------------------------------>//
+  //<------------------------------ hooks ------------------------------>//
 
-  //create local state hook for email & password input handling
-const [email, setEmail] = useState('');
-const [password, setPassword] = useState('');
-const navigate = useNavigate();
-  //prep store-state
-const dispatch = useDispatch();
-const authUser = useSelector((state) => state.auth) || [];
-
-//<------------------------------ componentDidMount ------------------------------>//
-
-useEffect(() => {
-  dispatch(me());
-}, [!authUser]);
+  const dispatch = useDispatch();
+  const authUser = useSelector((state) => state.auth) || [];
+  console.log(authUser)
 
 //<------------------------------ event & error handling ------------------------------>//
 
-// const [errorMsg, setErrorMsg] = useState("");
+useEffect(() => {
+  dispatch(me())
+}, [!authUser]);
 
-const handleEmailChange = (event) => {
-  setEmail(event);
-};
-
-const handlePasswordChange = (event) => {
-  setPassword(event);
-};
-
-const handleSubmit = (event) => {
-  dispatch(authenticate(email, password, event));
-  if(authUser) navigate("/Dashboard");
-};
-
-//<------------------------------ React render ------------------------------>//
 
   return(
     <div>
@@ -53,10 +32,20 @@ const handleSubmit = (event) => {
           <Box bg="blackAlpha.600" borderRadius="sm">
             <Center as="h1" bg="blackAlpha.500" p="4" borderRadius="sm">
               <Text fontSize="4xl" color="white">
-                Please Login
+                Dashboard Page (Testing)
               </Text>
             </Center>
-            <VStack spacing='5' p='4' mt="4" mb="4">
+            <Center as="h1" bg="blackAlpha.500" p="4" borderRadius="sm">
+              {!authUser.email 
+                ? <Text fontSize="3xl"color="white">
+                    Please Log In
+                  </Text> 
+                : <Text fontSize="3xl"color="white">
+                    Welcome, {authUser.email}
+                  </Text>
+              }
+            </Center>
+            {/* <VStack spacing='5' p='4' mt="4" mb="4">
               <PrimaryButton w='300px'>Login with Google</PrimaryButton>
               <PrimaryButton w='300px'>Login with Apple</PrimaryButton>
               <Text color="gray.400">or login with your email address</Text>
@@ -78,7 +67,7 @@ const handleSubmit = (event) => {
               </FormControl>
 
               <SecondaryButton w='300px' onClick={()=>{handleSubmit("login")}}>Login</SecondaryButton>
-            </VStack>
+            </VStack> */}
             <Center bg="blackAlpha.500" p="4">
               <Text fontSize="m" color="white">
                 Not a member? <Link to="/signup">   Sign Up</Link>
@@ -93,4 +82,4 @@ const handleSubmit = (event) => {
   
   
 
-export default LogIn;
+export default Dashboard;

@@ -3,9 +3,11 @@ import { createStore, combineReducers, applyMiddleware } from "redux";
 import { logger, createLogger } from "redux-logger";
 import thunkMiddleware from "redux-thunk";
 import { users } from "./users";
+import { auth } from "./auth";
 
 const reducer = combineReducers({
-  users
+  users,
+  auth
 });
 
 const myLogger = createLogger({collapsed: true}); 
@@ -22,4 +24,5 @@ const store = configureStore({
 
 export default store;
 export * from "./users";
+export * from "./auth";
 

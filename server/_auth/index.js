@@ -34,7 +34,9 @@ router.post("/signup", async (req, res, next)=> {
 //user 'me' auth to GET user db data
 router.get("/me", async (req, res, next)=> {
   try {
-    res.send(await User.findByToken(req.headers.authorization))
+    const user = await User.findByToken(req.headers.authorization); 
+    const {id, email } = user;
+    res.send({id, email});
   } catch(err) {
     next(err);
   }
