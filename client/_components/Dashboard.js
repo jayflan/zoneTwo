@@ -13,7 +13,6 @@ const Dashboard = () => {
 
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.auth) || [];
-  console.log(authUser)
 
 //<------------------------------ event & error handling ------------------------------>//
 
