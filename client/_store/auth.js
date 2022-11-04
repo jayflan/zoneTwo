@@ -1,4 +1,5 @@
 import axios from "axios";
+import history from "../history";
 
 const TOKEN = "token";
 
@@ -7,7 +8,6 @@ const SET_AUTH = "SET_AUTH";
 
 //<---------- ACTION CREATORS ---------->
 const setAuth = (auth) => ({ type: SET_AUTH, auth });
-const _logout = () => ({ type: SET_AUTH, auth: {} });
 
 //<---------- THUNKS ---------->
   //me thunk sets the store after running authenticate thunk
@@ -38,10 +38,13 @@ export const authenticate = (email, password, method) => async (dispatch) => {
 };
 
 export const logout = () => {
-  return (dispatch) => {
-    window.localStorage.removeItem(TOKEN);
-    dispatch(_logout());
-  };
+  window.localStorage.removeItem(TOKEN);
+  history.push("/login")
+    return {
+      type: SET_AUTH,
+      auth: {}
+    };
+
 }; 
 
 //<---------- REDUCER ---------->
