@@ -10,7 +10,7 @@ describe("Component Check - LogIn", () => {
   describe("<LogIn /> is active?", () => {
     it("renders Google OAuth button text", () => {
       render(<LogIn />, {wrapper: BrowserRouter});
-      const message = screen.getByText(`Log In using Google`);
+      const message = screen.getByText(`Login with Google`);
       expect(message).to.exist;
     });
   });
