@@ -26,7 +26,7 @@ useEffect(() => {
 
 //<------------------------------ event & error handling ------------------------------>//
 
-// const [errorMsg, setErrorMsg] = useState("");
+const [errorMsg, setErrorMsg] = useState("");
 
 const handleEmailChange = (event) => {
   setEmail(event);
@@ -38,7 +38,6 @@ const handlePasswordChange = (event) => {
 
 const handleSubmit = (event) => {
   dispatch(authenticate(email, password, event));
-  if(authUser) navigate("/Dashboard");
 };
 
 //<------------------------------ React render ------------------------------>//
