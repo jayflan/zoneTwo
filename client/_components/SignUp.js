@@ -1,7 +1,9 @@
 import { Box, Center, Divider, Flex, FormControl, VStack, Image, Text, Button, Input } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { PrimaryButton, SecondaryButton } from "./styles/index";
+import { authenticate } from "../_store/auth";
 
 
 const SignUp = () => {
@@ -11,6 +13,8 @@ const SignUp = () => {
 //create local state hook for email & password input handling
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
+//create redux state hook to dispatch CRUD operations
+const dispatch = useDispatch();
 
 //<------------------------------ event & error handling ------------------------------>//
 
@@ -22,11 +26,15 @@ const handlePasswordChange = (event) => {
   setPassword(event);
 };
 
+const handleSubmit = (event) => {
+  // event.prevent.default;
+  dispatch(authenticate(email, password, 'signup'))
+};
+
+//todo setup password change operation once admin is setup
 // const handlePasswordChange = (event) => {
 //   // setState.password(event);
 // };
-
-
 
 
   return(
@@ -63,7 +71,7 @@ const handlePasswordChange = (event) => {
                 </Center>
               </FormControl>
 
-              <SecondaryButton w='300px' onClick={()=>{console.log(email, password)}}>Sign Up</SecondaryButton>
+              <SecondaryButton w='300px' onClick={()=>{handleSubmit()}}>Sign Up</SecondaryButton>
             </VStack>
             <Center bg="blackAlpha.500" p="4">
               <Text fontSize="m" color="white">

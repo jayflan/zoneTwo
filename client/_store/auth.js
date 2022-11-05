@@ -1,5 +1,6 @@
 import axios from "axios";
 import history from "../history";
+import { getUsers } from "./users";
 
 const TOKEN = "token";
 
@@ -32,6 +33,8 @@ export const authenticate = (email, password, method) => async (dispatch) => {
     });
     window.localStorage.setItem(TOKEN, res.data.token);
     dispatch(me());
+    //repull user list if signup to update store    
+    if(method === 'signup') dispatch(getUsers());
   } catch(authErr) {
     return dispatch(setAuth({ error: authErr }));
   }
