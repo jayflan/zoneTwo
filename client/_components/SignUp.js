@@ -1,6 +1,6 @@
 import { Box, Center, Divider, Flex, FormControl, VStack, Image, Text, Button, Input, FormHelperText, FormErrorMessage } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { PrimaryButton, SecondaryButton } from "./styles/index";
 import { authenticate } from "../_store/auth";
@@ -13,14 +13,19 @@ const SignUp = () => {
 //create local state hook for email & password input handling
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
+//create local state hook for email & password error handling
+const [emailError, setEmailError] = useState(false);
+const [passwordError, setPasswordError] = useState(false);
+const isLoggedIn = useSelector((state) => state.auth) || [];
 //create redux state hook to dispatch CRUD operations
 const dispatch = useDispatch();
 
 //<------------------------------ event & error handling ------------------------------>//
 
-
-const isEmailError = email === '';
-const isPasswordError = password === '';
+//pull auth errors to eval & display user errors 
+let axiosError = '';
+if(isLoggedIn.error) {axiosError = isLoggedIn.error}
+const signupError = axiosError.response;
 
 const handleEmailChange = (event) => {
   setEmail(event);
@@ -32,7 +37,16 @@ const handlePasswordChange = (event) => {
 
 const handleSubmit = (event) => {
   // event.prevent.default;
-  dispatch(authenticate(email, password, 'signup'))
+  if(email) setEmailError(false);
+  if(password) setPasswordError(false);
+  
+  if(!email) {
+    setEmailError(true);
+  } else if(!password) {
+    setPasswordError(true);
+  } else {
+    dispatch(authenticate(email, password, 'signup'));
+  }
 };
 
 //todo setup password change operation once admin is setup
@@ -54,35 +68,43 @@ const handleSubmit = (event) => {
                 Sign up today, it's Free
               </Text>
             </Center>
+
             <VStack spacing='5' p='4' mt="4" mb="4">
               <PrimaryButton w='300px'>Sign Up with Google</PrimaryButton>
               <PrimaryButton w='300px'>Sign Up with Apple</PrimaryButton>
               <Text color="gray.400">or sign up with your email address</Text>
-
-            <Center>
-              <FormControl isInvalid={isEmailError}>
-                <Input type='email' value={email} w="300px" color="white" placeholder="Email" _placeholder={{color: "white.100"}}
-                  onChange={(e)=>handleEmailChange(e.target.value)}
-                ></Input>
-                {isEmailError ? (
-                  <FormErrorMessage>Email is required.</FormErrorMessage>
-                ) : ('')}
-              </FormControl>
-            </Center>
-
-            <Center>
-              <FormControl isInvalid={isPasswordError}>
-                <Input type='password' value={password} w="300px" color="white" placeholder="Password" _placeholder={{color: "white.100"}}
-                  onChange={(e)=>handlePasswordChange(e.target.value)}
-                ></Input>
-                {isPasswordError ? (
-                  <FormErrorMessage>Password is required.</FormErrorMessage>  
-                ) : ('')}
-              </FormControl>
-            </Center>
-
-              <SecondaryButton w='300px' onClick={()=>{handleSubmit()}}>Sign Up</SecondaryButton>
+              <Center>
+                <FormControl isInvalid={emailError}>
+                  <Input type='email' value={email} w="300px" color="white" placeholder="Email" _placeholder={{color: "white.100"}}
+                    onChange={(e)=>handleEmailChange(e.target.value)}
+                  ></Input>
+                  {emailError && !email ? (
+                    <FormErrorMessage>Email is required.</FormErrorMessage>
+                  ) : ('')}
+                </FormControl>
+              </Center>
+              <Center>
+                <FormControl isInvalid={passwordError}>
+                  <Input type='password' value={password} w="300px" color="white" placeholder="Password" _placeholder={{color: "white.100"}}
+                    onChange={(e)=>handlePasswordChange(e.target.value)}
+                  ></Input>
+                  {passwordError && !password ? (
+                    <FormErrorMessage>Password is required.</FormErrorMessage>  
+                  ) : ('')}
+                </FormControl>
+              </Center>
+              <Center>
+                <FormControl isInvalid={isLoggedIn}>
+                  <Center mb='6'>
+                    {isLoggedIn.error ? (
+                      <FormErrorMessage>{signupError.data}</FormErrorMessage>
+                    ) : ('')}
+                  </Center>
+                  <SecondaryButton w='300px' onClick={()=>{handleSubmit()}}>Sign Up</SecondaryButton>
+                </FormControl>
+              </Center>
             </VStack>
+
             <Center bg="blackAlpha.500" p="4">
               <Text fontSize="m" color="white">
                 Already a member?   <Link to="/login">LogIn</Link>
