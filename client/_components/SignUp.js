@@ -1,4 +1,4 @@
-import { Box, Center, Divider, Flex, FormControl, VStack, Image, Text, Button, Input } from "@chakra-ui/react";
+import { Box, Center, Divider, Flex, FormControl, VStack, Image, Text, Button, Input, FormHelperText, FormErrorMessage } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -17,6 +17,10 @@ const [password, setPassword] = useState('');
 const dispatch = useDispatch();
 
 //<------------------------------ event & error handling ------------------------------>//
+
+
+const isEmailError = email === '';
+const isPasswordError = password === '';
 
 const handleEmailChange = (event) => {
   setEmail(event);
@@ -55,21 +59,27 @@ const handleSubmit = (event) => {
               <PrimaryButton w='300px'>Sign Up with Apple</PrimaryButton>
               <Text color="gray.400">or sign up with your email address</Text>
 
-              <FormControl>
-                <Center>
-                  <Input w="300px" color="white" placeholder="Email" _placeholder={{color: "white.100"}}
-                    onChange={(e)=>handleEmailChange(e.target.value)}
-                  ></Input>
-                </Center>
+            <Center>
+              <FormControl isInvalid={isEmailError}>
+                <Input type='email' value={email} w="300px" color="white" placeholder="Email" _placeholder={{color: "white.100"}}
+                  onChange={(e)=>handleEmailChange(e.target.value)}
+                ></Input>
+                {isEmailError ? (
+                  <FormErrorMessage>Email is required.</FormErrorMessage>
+                ) : ('')}
               </FormControl>
+            </Center>
 
-              <FormControl>
-                <Center>
-                  <Input w="300px" color="white" placeholder="Password" _placeholder={{color: "white.100"}}
-                    onChange={(e)=>handlePasswordChange(e.target.value)}
-                  ></Input>
-                </Center>
+            <Center>
+              <FormControl isInvalid={isPasswordError}>
+                <Input type='password' value={password} w="300px" color="white" placeholder="Password" _placeholder={{color: "white.100"}}
+                  onChange={(e)=>handlePasswordChange(e.target.value)}
+                ></Input>
+                {isPasswordError ? (
+                  <FormErrorMessage>Password is required.</FormErrorMessage>  
+                ) : ('')}
               </FormControl>
+            </Center>
 
               <SecondaryButton w='300px' onClick={()=>{handleSubmit()}}>Sign Up</SecondaryButton>
             </VStack>
