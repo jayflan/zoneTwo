@@ -15,6 +15,7 @@ router.post("/login", async (req, res, next)=>{
   try {
     res.send({ token: await User.authenticate(req.body) });
   } catch(err) {
+    res.status(401).send("Invalid Email/Password")
     next(err);
   };
 });
