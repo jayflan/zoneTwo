@@ -1,44 +1,60 @@
-// import { Box, Center, Divider, Flex, VStack, Image, Text, Button, Input } from "@chakra-ui/react";
-import { Box, Center, Divider, Flex, FormControl, VStack, Image, Text, Button, Input } from "@chakra-ui/react";
+import { Box, Center, Divider, Flex, FormControl, VStack, Image, Text, Button, Input, FormErrorMessage } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { PrimaryButton, SecondaryButton } from "./styles/index";
-import { authenticate, me } from "../_store/auth";
+import { authenticate } from "../_store/auth";
 
 const LogIn = () => {
   
 //<------------------------------ hooks ------------------------------>//
 
-  //create local state hook for email & password input handling
+  //create local state hook for email & password input & error handling
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
-const navigate = useNavigate();
+const [isEmailError, setEmailError] = useState(false);
+const [isPasswordError, setPasswordError] = useState(false);
+const [errorMsg, setErrorMsg] = useState('');
   //prep store-state
 const dispatch = useDispatch();
-const authUser = useSelector((state) => state.auth) || [];
+const isLoggedIn = useSelector((state) => state.auth) || [];
 
 //<------------------------------ componentDidMount ------------------------------>//
 
 useEffect(() => {
-  dispatch(me());
-}, [!authUser]);
+  logInError = axiosError.response;
+}, [!logInError]);
 
 //<------------------------------ event & error handling ------------------------------>//
 
-const [errorMsg, setErrorMsg] = useState("");
+//pull auth errors to eval & display user errors 
+let axiosError = {};
+if(isLoggedIn.error) {axiosError = isLoggedIn.error}
+let logInError = {};
+
 
 const handleEmailChange = (event) => {
   setEmail(event);
-};
+}
 
 const handlePasswordChange = (event) => {
   setPassword(event);
-};
+}
 
-const handleSubmit = (event) => {
-  dispatch(authenticate(email, password, event));
-};
+const handleSubmit = () => {
+  setErrorMsg("");
+  if(email) setEmailError(false);
+  if(password) setPasswordError(false);
+
+  if(!email){
+    setEmailError(true);
+  } else if(!password) {
+    setPasswordError(true);
+  } else {    
+    dispatch(authenticate(email, password, "login"));
+    if(logInError) setErrorMsg("Invalid Email/Password")
+  }
+}
 
 //<------------------------------ React render ------------------------------>//
 
@@ -60,23 +76,39 @@ const handleSubmit = (event) => {
               <PrimaryButton w='300px'>Login with Apple</PrimaryButton>
               <Text color="gray.400">or login with your email address</Text>
 
-              <FormControl>
-                <Center>
-                  <Input w="300px" color="white" placeholder="Email" _placeholder={{color: "white.100"}}
+              <Center>
+                <FormControl isInvalid={isEmailError}>
+                  <Input type='email' value={email} w="300px" color="white" placeholder="Email" _placeholder={{color: "white.100"}}
                     onChange={(e)=>handleEmailChange(e.target.value)}
                   ></Input>
-                </Center>
-              </FormControl>
+                  {isEmailError ? (
+                    <FormErrorMessage>Email is required.</FormErrorMessage>
+                  ) : ('')}
+                </FormControl>
+              </Center>
 
-              <FormControl>
-                <Center>
-                  <Input w="300px" color="white" placeholder="Password" _placeholder={{color: "white.100"}}
+              <Center>
+                <FormControl isInvalid={isPasswordError}>
+                  <Input type='password' value={password} w="300px" color="white" placeholder="Password" _placeholder={{color: "white.100"}}
                     onChange={(e)=>handlePasswordChange(e.target.value)}
                   ></Input>
-                </Center>
-              </FormControl>
+                  {isPasswordError ? (
+                    <FormErrorMessage>Password is required.</FormErrorMessage>
+                  ) : ('')}
+                </FormControl>
+              </Center>
+              
+              <Center>
+                <FormControl isInvalid={errorMsg}>
+                  <Center>
+                    {errorMsg ? (
+                      <FormErrorMessage mb='6'>{errorMsg}</FormErrorMessage>
+                    ) : ('')}
+                  </Center>
+                  <SecondaryButton w='300px' onClick={()=>{handleSubmit()}}>Login</SecondaryButton>
+                </FormControl>
+              </Center>
 
-              <SecondaryButton w='300px' onClick={()=>{handleSubmit("login")}}>Login</SecondaryButton>
             </VStack>
             <Center bg="blackAlpha.500" p="4">
               <Text fontSize="m" color="white">

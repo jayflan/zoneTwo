@@ -1,9 +1,9 @@
 import { Box, Center, Divider, Flex, FormControl, VStack, Image, Text, Button, Input, FormHelperText, FormErrorMessage } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { PrimaryButton, SecondaryButton } from "./styles/index";
-import { authenticate } from "../_store/auth";
+import { authenticate, me } from "../_store/auth";
 
 
 const SignUp = () => {
@@ -16,16 +16,27 @@ const [password, setPassword] = useState('');
 //create local state hook for email & password error handling
 const [emailError, setEmailError] = useState(false);
 const [passwordError, setPasswordError] = useState(false);
+const [errorMsg, setErrorMsg] = useState("");
+//prep store-state
 const isLoggedIn = useSelector((state) => state.auth) || [];
 //create redux state hook to dispatch CRUD operations
 const dispatch = useDispatch();
 
+
+//<------------------------------ componentDidMount ------------------------------>//
+
+useEffect(() => {
+  signupError = axiosError.response;
+}, [!signupError])
+
+
 //<------------------------------ event & error handling ------------------------------>//
 
 //pull auth errors to eval & display user errors 
-let axiosError = '';
+let axiosError = {};
 if(isLoggedIn.error) {axiosError = isLoggedIn.error}
-const signupError = axiosError.response;
+let signupError = {};
+
 
 const handleEmailChange = (event) => {
   setEmail(event);
@@ -35,8 +46,9 @@ const handlePasswordChange = (event) => {
   setPassword(event);
 };
 
-const handleSubmit = (event) => {
+const handleSubmit = () => {
   // event.prevent.default;
+  setErrorMsg("");
   if(email) setEmailError(false);
   if(password) setPasswordError(false);
   
@@ -45,7 +57,8 @@ const handleSubmit = (event) => {
   } else if(!password) {
     setPasswordError(true);
   } else {
-    dispatch(authenticate(email, password, 'signup'));
+    dispatch(authenticate(email, password, "signup"));
+    if(signupError) setErrorMsg("User already exists")
   }
 };
 
@@ -94,10 +107,10 @@ const handleSubmit = (event) => {
                 </FormControl>
               </Center>
               <Center>
-                <FormControl isInvalid={isLoggedIn}>
+                <FormControl isInvalid={errorMsg}>
                   <Center mb='6'>
-                    {isLoggedIn.error ? (
-                      <FormErrorMessage>{signupError.data}</FormErrorMessage>
+                    {errorMsg ? (
+                      <FormErrorMessage>{errorMsg}</FormErrorMessage>
                     ) : ('')}
                   </Center>
                   <SecondaryButton w='300px' onClick={()=>{handleSubmit()}}>Sign Up</SecondaryButton>
