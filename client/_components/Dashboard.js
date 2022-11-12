@@ -1,84 +1,85 @@
 // import { Box, Center, Divider, Flex, VStack, Image, Text, Button, Input } from "@chakra-ui/react";
 import { Box, Center, Divider, Flex, FormControl, VStack, Image, Text, Button, Input } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { PrimaryButton, SecondaryButton } from "./styles/index";
 import { auth, authenticate, me } from "../_store/auth";
-
+import InfoCard from "./dashboardCards/InfoCard";
+import NewsCard from "./dashboardCards/NewsCard";
+import WorkoutCard from "./dashboardCards/WorkoutCard";
 
 const Dashboard = () => {
   
   //<------------------------------ hooks ------------------------------>//
-
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.auth) || [];
+  // const refScrollListen = useRef(null);
 
-//<------------------------------ event & error handling ------------------------------>//
+  useEffect(() => {
+    dispatch(me());
+  }, [!authUser]);
 
-useEffect(() => {
-  dispatch(me())
-}, [!authUser]);
+  useEffect(() => {
+    document.body.style.backgroundColor = "#E2E8F0"; // change dashboard background to grey
+    return function cleanup() {
+      document.body.style.backgroundColor = "#071907"; // change background body to black
+    }
+  },[]);
+
+  // useEffect(() => {
+  //   const span = refScrollListen.current;
+  //   span.addEventListener('scroll', handleScroll(span))
+  // }, [handleScroll]);
+
+  //<------------------------------ event & error handling ------------------------------>//
 
 
+  //scroll listener
+  // const handleScroll = useCallback((div) => {
+  //   console.log(div);
+  // });
+
+  // const handleScroll = (span) => {
+  //   // console.log('clientHeight:', span.clientHeight);
+  //   // console.log('scrollTop:', span.scrollTop);
+  //   // console.log('scrollHeight:', span.scrollHeight);
+  //   // console.log('scrolling:', span.scrollTop, span)
+  //   console.log('handlScroll:', (span));
+  // };
+  
+  // const handleScroll = () => {
+  //   if(refinfoCard.current) {
+  //     const { scrollHeight, scrollTop, clientHeight } = refinfoCard.current;
+  //     const bottom = scrollHeight - Math.ceil(scrollTop) === clientHeight;
+  //     if(bottom) console.log('Reached infoCards Bottom');
+  //   }
+  // }
+
+  //<------------------------------ render ------------------------------>//
+  
   return(
     <div>
-      <Flex
-        bgImage="url('_img/roadBike.jpg')"
-        direction='column'
-      >
-        <Center mt="20" mb="80">
-          <Box bg="blackAlpha.600" borderRadius="sm">
-            <Center as="h1" bg="blackAlpha.500" p="4" borderRadius="sm">
-              <Text fontSize="4xl" color="white">
-                Dashboard Page (Testing)
-              </Text>
-            </Center>
-            <Center as="h1" bg="blackAlpha.500" p="4" borderRadius="sm">
-              {!authUser.email 
-                ? <Text fontSize="3xl"color="white">
-                    Please Log In
-                  </Text> 
-                : <Text fontSize="3xl"color="white">
-                    Welcome, {authUser.email}
-                  </Text>
-              }
-            </Center>
-            {/* <VStack spacing='5' p='4' mt="4" mb="4">
-              <PrimaryButton w='300px'>Login with Google</PrimaryButton>
-              <PrimaryButton w='300px'>Login with Apple</PrimaryButton>
-              <Text color="gray.400">or login with your email address</Text>
-
-              <FormControl>
-                <Center>
-                  <Input w="300px" color="white" placeholder="Email" _placeholder={{color: "white.100"}}
-                    onChange={(e)=>handleEmailChange(e.target.value)}
-                  ></Input>
-                </Center>
-              </FormControl>
-
-              <FormControl>
-                <Center>
-                  <Input w="300px" color="white" placeholder="Password" _placeholder={{color: "white.100"}}
-                    onChange={(e)=>handlePasswordChange(e.target.value)}
-                  ></Input>
-                </Center>
-              </FormControl>
-
-              <SecondaryButton w='300px' onClick={()=>{handleSubmit("login")}}>Login</SecondaryButton>
-            </VStack> */}
-            <Center bg="blackAlpha.500" p="4">
-              <Text fontSize="m" color="white">
-                Not a member? <Link to="/signup">   Sign Up</Link>
-              </Text>
-            </Center>
-          </Box>
-        </Center>
+      <Flex pt="40" justifyContent="center">
+        {/* User info cards that scroll to bottom then become fixed */}
+        <Box as='span' display={{base: 'none', md: 'block'}}>
+          <InfoCard/>
+        </Box>
+        <Box pl='4' pr='4'>
+          <WorkoutCard/>
+          <WorkoutCard/>
+          <WorkoutCard/>
+          <WorkoutCard/>
+          <WorkoutCard/>
+          <WorkoutCard/>
+          <WorkoutCard/>
+        </Box>
+        <Box display={{base: 'none', lg: 'block' }}>
+          <NewsCard/>
+        </Box>
       </Flex>
-      </div>
+    </div>
   );
 };
   
-  
-
 export default Dashboard;

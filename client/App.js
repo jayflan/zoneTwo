@@ -11,13 +11,14 @@ const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getUsers());
+    document.body.style.backgroundColor = "#071907" // change background body to black
   });
 
   return(
     <ChakraProvider>
+      <Navbar/>
       <Container maxW='container.xl' p='0'>
         <div className="main">
-          <Navbar/>
           <ReactRoutes />
         </div>
       </Container>

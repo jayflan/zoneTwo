@@ -4,11 +4,13 @@ import { Box, Flex, Button, Text } from "@chakra-ui/react";
 import SecondaryButton from "./styles/SecondaryButton";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, me } from "../_store/auth";
+import { setScrollLock } from "../_hooks/useScrollLock";
 
 const Navbar = () => {
 
   const location = useLocation();
   const dispatch = useDispatch();
+  const { lockScroll, unlockScroll } = setScrollLock;
   let isLoggedIn = useSelector((state) => state.auth);
   
   useEffect(() => {
@@ -18,8 +20,7 @@ const Navbar = () => {
 
   return(
     <div className="navbar">
-      <Box mb='1' borderBottom='1px' borderBottomColor='gray.400'> 
-      {/* {console.log(Boolean(isLoggedIn))} */}
+      <Box as='nav'  position='fixed' w='full' borderBottom='1px' borderBottomColor='gray.400'> 
       {!isLoggedIn.email
         ? 
         <Flex direction='row' justify='space-between' bg='gray.50' h='full'>
