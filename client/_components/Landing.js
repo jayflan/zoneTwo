@@ -1,5 +1,5 @@
 import { Box, Center, Divider, Flex, VStack, Image, Text } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Footer from "./Footer"
