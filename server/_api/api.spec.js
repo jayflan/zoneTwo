@@ -19,7 +19,7 @@ describe("API Routes", () => {
         .expect(200)
 
         expect(res.body).to.be.an("array");
-        expect(res.body.length).to.equal(2);
+        expect(res.body.length).to.be.greaterThan(1);
     });
     it("GET /api/bikes", async() => {
       const res = await request(app)

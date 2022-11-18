@@ -11,7 +11,7 @@ describe('Workout Model', ()=> {
   describe('Workout Data Layer', ()=> {
     describe('Workout Check', ()=> {
       it('There are 2 workouts', async()=> {
-        expect(workouts.length).to.equal(2);
+        expect(workouts.length).to.be.greaterThan(1);
       });
       it('First workout has name', async()=> {
         expect(workouts[0].name).to.be.ok;
