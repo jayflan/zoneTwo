@@ -3,6 +3,9 @@ const {
   models: { User, Workout, Bike, } 
  } = require("../server/_db");
 
+const fs = require('fs');
+const { parseGpx } = require('../server/_api/_apiFunctions');
+
 /*
  * seed - this function clears the database, 
  * updates tables to match the models, 
@@ -23,9 +26,14 @@ async function seed() {
   const cody = await User.findOne({where: {email: "cody@gmail.com"}});
   const murphy = await User.findOne({where: {email: "murphy@msn.com"}});
 //Creating Workouts
+  const xmlDataMtn = fs.readFileSync('public/Morning_Mountain_Bike_Ride.gpx', 'utf-8');
+  const xmlDataRd = fs.readFileSync('public/Morning_ride.gpx', 'utf-8');
+  const gpxMtnWorkout = parseGpx(xmlDataMtn);
+  const gpxRdWorkout = parseGpx(xmlDataRd);
   const workouts = await Promise.all([
     Workout.create({name: 'Workout #1', description: 'Best workout ever', data: {heartrate: 180, speed: 10}, userId: cody.id}),
-    Workout.create({name: 'Workout #2', description: 'Best workout ever', data: {heartrate: 150, speed: 15}, userId: murphy.id})
+    Workout.create({name: 'Workout #2', description: 'Best workout ever', data: {heartrate: 150, speed: 15}, userId: murphy.id}),
+    Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', data: gpxRdWorkout.data, userId: murphy.id})
   ]);
 //Creating Bikes
   const bikes = await Promise.all([
