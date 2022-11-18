@@ -23,7 +23,7 @@ const isLoggedIn = useSelector((state) => state.auth) || [];
 
 useEffect(() => {
   logInError = axiosError.response;
-}, [!logInError]);
+}, []);
 
 //<------------------------------ event & error handling ------------------------------>//
 
