@@ -11,3 +11,19 @@ router.get("/", async(req, res, next) => {
     next(err);
   };
 });
+
+//GET all USER workouts
+router.get("/:id", async(req, res, next) => {
+  try {
+    const user = req.params.id;
+    const userWorkouts = await Workout.findAll({
+      where: {
+        userId: user
+      }
+    });
+    res.json(userWorkouts);
+
+  } catch(err) {
+    next(err);
+  }
+});
