@@ -65,7 +65,7 @@ const handleSubmit = () => {
         direction='column'
       >
         <Center mt="20" mb="80">
-          <Box bg="blackAlpha.600" borderRadius="sm">
+          <Box mt="8" bg="blackAlpha.600" borderRadius="sm">
             <Center as="h1" bg="blackAlpha.500" p="4" borderRadius="sm">
               <Text fontSize="4xl" color="white">
                 Please Login

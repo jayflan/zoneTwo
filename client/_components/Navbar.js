@@ -20,7 +20,7 @@ const Navbar = () => {
 
   return(
     <div className="navbar">
-      <Box as='nav'  position='fixed' w='full' borderBottom='1px' borderBottomColor='gray.400'> 
+      <Box as='nav'  position='fixed' w='full' borderBottom='1px' borderBottomColor='gray.400' zIndex='1'> 
       {!isLoggedIn.email
         ? 
         <Flex direction='row' justify='space-between' bg='gray.50' h='full'>
