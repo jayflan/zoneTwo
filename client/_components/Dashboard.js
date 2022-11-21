@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { PrimaryButton, SecondaryButton } from "./styles/index";
 import { auth, authenticate, me } from "../_store/auth";
+import { getUserWorkouts } from "../_store/workouts";
 import InfoCard from "./dashboardCards/InfoCard";
 import NewsCard from "./dashboardCards/NewsCard";
 import WorkoutCard from "./dashboardCards/WorkoutCard";
@@ -14,10 +15,11 @@ const Dashboard = () => {
   //<------------------------------ hooks ------------------------------>//
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.auth) || [];
-  // const refScrollListen = useRef(null);
+  const userWorkouts = useSelector((state) => state.userWorkouts || []);
 
   useEffect(() => {
     dispatch(me());
+    dispatch(getUserWorkouts(authUser.id));
   }, [!authUser]);
 
   useEffect(() => {
@@ -27,34 +29,7 @@ const Dashboard = () => {
     }
   },[]);
 
-  // useEffect(() => {
-  //   const span = refScrollListen.current;
-  //   span.addEventListener('scroll', handleScroll(span))
-  // }, [handleScroll]);
-
   //<------------------------------ event & error handling ------------------------------>//
-
-
-  //scroll listener
-  // const handleScroll = useCallback((div) => {
-  //   console.log(div);
-  // });
-
-  // const handleScroll = (span) => {
-  //   // console.log('clientHeight:', span.clientHeight);
-  //   // console.log('scrollTop:', span.scrollTop);
-  //   // console.log('scrollHeight:', span.scrollHeight);
-  //   // console.log('scrolling:', span.scrollTop, span)
-  //   console.log('handlScroll:', (span));
-  // };
-  
-  // const handleScroll = () => {
-  //   if(refinfoCard.current) {
-  //     const { scrollHeight, scrollTop, clientHeight } = refinfoCard.current;
-  //     const bottom = scrollHeight - Math.ceil(scrollTop) === clientHeight;
-  //     if(bottom) console.log('Reached infoCards Bottom');
-  //   }
-  // }
 
   //<------------------------------ render ------------------------------>//
   
@@ -63,16 +38,16 @@ const Dashboard = () => {
       <Flex pt="40" justifyContent="center">
         {/* User info cards that scroll to bottom then become fixed */}
         <Box as='span' display={{base: 'none', md: 'block'}}>
-          <InfoCard/>
+          <InfoCard workouts={userWorkouts} userEmail={authUser.email}/>
         </Box>
         <Box pl='4' pr='4'>
-          <WorkoutCard/>
-          <WorkoutCard/>
-          <WorkoutCard/>
-          <WorkoutCard/>
-          <WorkoutCard/>
-          <WorkoutCard/>
-          <WorkoutCard/>
+          
+          {
+            userWorkouts.map(workout => (
+              <WorkoutCard key={workout.id} workout={workout} userEmail={authUser.email} />
+            ))
+          }
+
         </Box>
         <Box display={{base: 'none', lg: 'block' }}>
           <NewsCard/>

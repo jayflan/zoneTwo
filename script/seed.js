@@ -33,7 +33,8 @@ async function seed() {
   const workouts = await Promise.all([
     Workout.create({name: 'Workout #1', description: 'Best workout ever', data: {heartrate: 180, speed: 10}, userId: cody.id}),
     Workout.create({name: 'Workout #2', description: 'Best workout ever', data: {heartrate: 150, speed: 15}, userId: murphy.id}),
-    Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', data: gpxRdWorkout.data, userId: murphy.id})
+    Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', data: gpxRdWorkout.data, userId: murphy.id}),
+    Workout.create({name: gpxMtnWorkout.name, description: 'Best workout ever', data: gpxMtnWorkout.data, userId: cody.id})
   ]);
 //Creating Bikes
   const bikes = await Promise.all([
