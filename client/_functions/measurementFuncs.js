@@ -1,5 +1,3 @@
-import { cookieStorageManager } from "@chakra-ui/react";
-
 const monthNameMap = {
   1: 'January',
   2: 'February',
@@ -124,4 +122,11 @@ export const hrsMinsSecs = (workout) => {
 
 const timeTo2Digits = (num) => {
   return num.toString().padStart(2, '0');
+}
+
+export const getLatLonArr = (arrLatLon) => {
+  return arrLatLon.reduce((accum, elem) => {
+    accum.push([+elem.lat, +elem.lon])
+    return accum;
+  }, []);
 }
