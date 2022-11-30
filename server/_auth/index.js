@@ -40,5 +40,7 @@ router.get("/me", async (req, res, next)=> {
     res.send({id, email});
   } catch(err) {
     next(err);
+    //send error to auth for bad token detection
+    res.send("error")
   }
 });

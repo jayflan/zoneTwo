@@ -90,7 +90,9 @@ const WorkoutCard = (props) => {
               </div>
             </Box>
             <Box as='h2' m={2}>
-              <Text as='b' fontSize='xl'>{workout.name}</Text>
+              <Link to={`/workouts/${workout.id}`}>
+                <Text as='b' fontSize='xl'>{workout.name}</Text>
+              </Link>
             </Box>
             <Flex mb= {6} p={2}>
               <Box pb={2}>

@@ -12,7 +12,7 @@ router.get("/", async(req, res, next) => {
   };
 });
 
-//GET all USER workouts
+//GET all USER workouts via USER id
 router.get("/:id", async(req, res, next) => {
   try {
     const user = req.params.id;
@@ -27,3 +27,14 @@ router.get("/:id", async(req, res, next) => {
     next(err);
   }
 });
+
+//GET single User Workout via Workout id
+router.get("/:id", async(req, res, next) => {
+  try {
+    const workout = req.params.id;
+    const userWorkout = await Workout.findByPk(workout);
+    res.send(userWorkout);
+  } catch(err) {
+    next(err);
+  }
+})

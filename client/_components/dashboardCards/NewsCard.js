@@ -18,7 +18,6 @@ const NewsCard = () => {
   // const authUser = useSelector((state) => state.auth) || [];
 
   // useEffect(() => {
-  //   dispatch(me())
   // }, [!authUser]);
   
 
