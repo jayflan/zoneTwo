@@ -16,19 +16,15 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.auth) || [];
   const userWorkouts = useSelector((state) => state.userWorkouts || []);
-
-  useEffect(() => {
-    dispatch(me());
-    dispatch(getUserWorkouts(authUser.id));
-  }, [!authUser]);
-
-  useEffect(() => {
-    document.body.style.backgroundColor = "#E2E8F0"; // change dashboard background to grey
-    return function cleanup() {
-      document.body.style.backgroundColor = "#071907"; // change background body to black
-    }
-  },[]);
-
+  
+    useEffect(() => {  
+      document.body.style.backgroundColor = "#E2E8F0"; // change dashboard background to grey
+      dispatch(getUserWorkouts(authUser.id));
+      return function cleanup() {
+        document.body.style.backgroundColor = "#071907"; // change background body to black
+      }    
+    }, [authUser]);
+    
   //<------------------------------ event & error handling ------------------------------>//
 
   //<------------------------------ render ------------------------------>//
@@ -36,7 +32,6 @@ const Dashboard = () => {
   return(
     <div>
       <Flex pt="40" justifyContent="center">
-        {/* User info cards that scroll to bottom then become fixed */}
         <Box as='span' display={{base: 'none', md: 'block'}}>
           <InfoCard workouts={userWorkouts} userEmail={authUser.email}/>
         </Box>

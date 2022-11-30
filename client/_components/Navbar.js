@@ -11,11 +11,11 @@ const Navbar = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { lockScroll, unlockScroll } = setScrollLock;
+  const token = window.localStorage.getItem('token');
   let isLoggedIn = useSelector((state) => state.auth);
   
   useEffect(() => {
-    dispatch(me()),
-    isLoggedIn = window.localStorage.getItem('token');
+    dispatch(me());
   }, []);
 
   return(
@@ -26,11 +26,11 @@ const Navbar = () => {
         <Flex direction='row' justify='space-between' bg='gray.50' h='full'>
           <Box as='div' pl='5' m='5' pt='1' fontSize='xl'><Text as='b'>zoneTwo</Text></Box>
           {/*LogIn / LogOut / SignUp button path toggle*/}
-           {location.pathname === '/login' && !isLoggedIn.email ?
+           {location.pathname === '/login' && !token ?
             <Link to="/signup">
               <SecondaryButton m='5' mr='10'>SignUp</SecondaryButton>
             </Link> : '' }
-            {location.pathname === '/signup' && !isLoggedIn.email || location.pathname === '/landing' && !isLoggedIn.email || location.pathname === '/' && !isLoggedIn.email ?
+            {location.pathname === '/signup' && !token || location.pathname === '/landing' && !token || location.pathname === '/' && !token ?
             <Link to="/login">
               <SecondaryButton m='5' mr='10'>Login</SecondaryButton>
             </Link> : '' }

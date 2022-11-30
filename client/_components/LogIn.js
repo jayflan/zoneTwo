@@ -10,52 +10,52 @@ const LogIn = () => {
 //<------------------------------ hooks ------------------------------>//
 
   //create local state hook for email & password input & error handling
-const [email, setEmail] = useState('');
-const [password, setPassword] = useState('');
-const [isEmailError, setEmailError] = useState(false);
-const [isPasswordError, setPasswordError] = useState(false);
-const [errorMsg, setErrorMsg] = useState('');
-  //prep store-state
-const dispatch = useDispatch();
-const isLoggedIn = useSelector((state) => state.auth) || [];
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isEmailError, setEmailError] = useState(false);
+  const [isPasswordError, setPasswordError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+    //prep store-state
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.auth) || [];
 
 //<------------------------------ componentDidMount ------------------------------>//
 
-useEffect(() => {
-  logInError = axiosError.response;
-}, []);
+  useEffect(() => {
+    if(isLoggedIn.error) setErrorMsg("Invalid Email/Password");
+  }, [isLoggedIn]);
 
 //<------------------------------ event & error handling ------------------------------>//
 
 //pull auth errors to eval & display user errors 
-let axiosError = {};
-if(isLoggedIn.error) {axiosError = isLoggedIn.error}
-let logInError = {};
 
-
-const handleEmailChange = (event) => {
-  setEmail(event);
-}
-
-const handlePasswordChange = (event) => {
-  setPassword(event);
-}
-
-const handleSubmit = () => {
-  setErrorMsg("");
-  if(email) setEmailError(false);
-  if(password) setPasswordError(false);
-
-  if(!email){
-    setEmailError(true);
-  } else if(!password) {
-    setPasswordError(true);
-  } else {    
-    dispatch(authenticate(email, password, "login"));
-    if(logInError) setErrorMsg("Invalid Email/Password")
+  const handleEmailChange = (event) => {
+    setErrorMsg("");
+    setEmail(event);
   }
-}
 
+  const handlePasswordChange = (event) => {
+    setErrorMsg("");
+    setPassword(event);
+  }
+
+  const handleSubmit = () => {
+
+    window.localStorage.removeItem('token');
+
+    if(email) setEmailError(false);
+    if(password) setPasswordError(false);
+
+    if(!email){
+      setEmailError(true);
+    } else if(!password) {
+      setPasswordError(true);
+    } else {    
+      dispatch(authenticate(email, password, "login"));
+    };
+    
+  }
+  
 //<------------------------------ React render ------------------------------>//
 
   return(
@@ -120,7 +120,7 @@ const handleSubmit = () => {
       </Flex>
       </div>
   );
-};
+}
   
   
 
