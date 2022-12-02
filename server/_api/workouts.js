@@ -29,7 +29,7 @@ router.get("/:id", async(req, res, next) => {
 });
 
 //GET single User Workout via Workout id
-router.get("/:id", async(req, res, next) => {
+router.get("/user/:id", async(req, res, next) => {
   try {
     const workout = req.params.id;
     const userWorkout = await Workout.findByPk(workout);
