@@ -47,7 +47,7 @@ const NoShowRoute = ({ children }) => {
   return(
     <div>
       <Routes>
-        <Route exact path="workouts/:id" element={<ShowProtectedRoute><UserWorkout/></ShowProtectedRoute>}/>
+        <Route exact path="workouts/user/:id" element={<ShowProtectedRoute><UserWorkout/></ShowProtectedRoute>}/>
         <Route exact path="dashboard" element={<ShowProtectedRoute><Dashboard/></ShowProtectedRoute>}/>
         <Route exact path="/" element={<NoShowRoute><Landing/></NoShowRoute>}/>
         <Route exact path="landing" element={<NoShowRoute><Landing/></NoShowRoute>}/>

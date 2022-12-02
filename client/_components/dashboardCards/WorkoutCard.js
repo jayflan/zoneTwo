@@ -1,12 +1,9 @@
-// import { Box, Center, Divider, Flex, VStack, Image, Text, Button, Input } from "@chakra-ui/react";
 import { AspectRatio, Box, Center, Divider, Flex, FormControl, VStack, Image, Text, Button, Input, chakra } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { MapContainer, Marker, Polyline, Popup, TileLayer, useMap } from "react-leaflet";
+import Map from "../Map.js";
 // import "leaflet/dist/leaflet.css";
 import { Link } from "react-router-dom";
-import { PrimaryButton, SecondaryButton } from "../styles/index";
-import { auth, authenticate, me } from "../../_store/auth";
 import { DateTime, getLatLonArr, wrkoutDist, wrkoutElevGain, hrsMinsSecs, meterToFeet } from "../../_functions/measurementFuncs";
 
 const WorkoutCard = (props) => {
@@ -17,11 +14,8 @@ const WorkoutCard = (props) => {
 
   //measurement functions and calcs found here
   let startTime = ""; // timestamp creation
-  let route, routeArr = [];
   const firstTrkPt = workout.data[0] || [];
   firstTrkPt ? startTime = firstTrkPt.time : "";
-  const firstTrkPtLat = +firstTrkPt.lat || 0;
-  const firstTrkPtLon = +firstTrkPt.lon || 0;
   const dateTime = new DateTime(startTime);
   const workoutTimeStamp = `${dateTime.monthName()} ${dateTime.dateNum()}, ${dateTime.dateFullYear()} at ${dateTime.dateTime()}`;
   const workoutLength = hrsMinsSecs(workout); // workout length (hrs/min/sec)
@@ -57,20 +51,6 @@ const WorkoutCard = (props) => {
     }
   })
 
-//<------------------------------ map logic ------------------------------>//
-
-  //Map route setup, if a lat point in trk exists
-  if(firstTrkPtLat) {
-    routeArr = workout.data || [];
-    route = getLatLonArr(routeArr);
-  }
-  
-  //set zoom boundry via Mapcontainer child component
-  function MapBoundry() {
-    const map = useMap();
-    map.fitBounds(route);
-  } 
-
   
 //<------------------------------ render ------------------------------>//
 
@@ -90,7 +70,7 @@ const WorkoutCard = (props) => {
               </div>
             </Box>
             <Box as='h2' m={2}>
-              <Link to={`/workouts/${workout.id}`}>
+              <Link to={`/workouts/user/${workout.id}`}>
                 <Text as='b' fontSize='xl'>{workout.name}</Text>
               </Link>
             </Box>
@@ -119,28 +99,12 @@ const WorkoutCard = (props) => {
             </Flex>
             <Box as='hr' m={2} pt={4} pb={2} color='grey.500' w='30em'></Box>
             <Box m={2} pb={2}>
-
-                  {/* Dispaly map if data lat point exists */}
+                  {/* Dispaly map if data latitude point exists */}
               {
-                firstTrkPtLat ? (    
-                  <MapContainer
-                    center={[firstTrkPtLat, firstTrkPtLon]}
-                    scrollWheelZoom={false}
-                    style={{height: "300px", width: "40em", zIndex: 0}}
-                  >
-                    <MapBoundry/>
-                    <TileLayer
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <Polyline
-                        pathOptions={{fillColor: 'blue', color: 'orange'}}
-                        positions={[route]}
-                    />
-                  </MapContainer>
+                firstTrkPt.lat ? (
+                  <Map workout={ workout }/>
                 ) : ("")
               }
-              
             </Box>
           </Box>            
         </Flex>
