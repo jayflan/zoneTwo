@@ -1,18 +1,32 @@
 import { Box, Button, Container, Flex, ListItem, Text, UnorderedList } from "@chakra-ui/react";
 import PrimaryButton from "./styles/PrimaryButton"
 import React, {useEffect} from "react";
+import { useSelector } from "react-redux";
 import Footer from "./Footer";
 import Newscard from "../_components/dashboardCards/NewsCard";
+import { useDispatch } from "react-redux";
+import { getSingleWorkout } from "../_store/singleWorkout";
+import { useHistory, useParams } from "react-router-dom";
 
 const UserWorkout = () => {
 
+
   //<------------------------------ hooks ------------------------------>//
+  const dispatch = useDispatch();
+  const urlWorkoutId = useParams();
+
+  const workout = useSelector((state) => state.singleWorkout) || [];
+  const user = useSelector((state) => state.auth) || [];
+  
   useEffect(() => {
+    dispatch(getSingleWorkout(urlWorkoutId.id))
     document.body.style.backgroundColor = "white";
     return function cleanup() {
       document.body.style.backgroundColor = "#071907"; // change background body to black
     }
-  },[]);
+  },[urlWorkoutId.id]);
+
+  
 
   //<------------------------------ componentDidMount ------------------------------>//
   //<------------------------------ event & error handling ------------------------------>//
@@ -34,13 +48,13 @@ const UserWorkout = () => {
           {/* Overview, Map, Graphs */}
           <Box flexGrow="1" mr={6}>
             <Box border="1px" borderBottom="0px" borderColor="gray.200" bg="gray.50">
-              <Text p="4" >Name Info - Mountain Bike Ride</Text>
+              <Text p="4" >{`${user.email} - ${workout.name}`}</Text>
             </Box>
             <Flex justifyContent="center">
               <Box flexGrow="1" border="1px" borderColor="gray.200">
                 <Flex direction="column" p="4">
                   <Text variant="textSmall">10:41 AM on Sunday, November 27, 2022</Text>
-                  <Text as="b" fontSize="3xl">Yellow w Some Blue</Text>
+                  <Text as="b" fontSize="3xl">{workout.name}</Text>
                   <Button as={PrimaryButton} w="32" h="6" fontSize="xs" mt="2"> Add a description</Button>
                 </Flex>
               </Box>

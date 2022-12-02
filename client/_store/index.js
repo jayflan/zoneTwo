@@ -5,11 +5,13 @@ import thunkMiddleware from "redux-thunk";
 import { users } from "./users";
 import { auth } from "./auth";
 import { userWorkouts } from "./workouts";
+import { singleWorkout } from "./singleWorkout";
 
 const reducer = combineReducers({
   users,
   auth,
-  userWorkouts
+  userWorkouts,
+  singleWorkout
 });
 
 const myLogger = createLogger({collapsed: true}); 
@@ -28,4 +30,5 @@ export default store;
 export * from "./users";
 export * from "./auth";
 export * from "./workouts";
+export * from "./singleWorkout";
 

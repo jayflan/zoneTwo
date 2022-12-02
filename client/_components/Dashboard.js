@@ -2,13 +2,14 @@
 import { Box, Center, Divider, Flex, FormControl, VStack, Image, Text, Button, Input } from "@chakra-ui/react";
 import React, { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { PrimaryButton, SecondaryButton } from "./styles/index";
 import { auth, authenticate, me } from "../_store/auth";
 import { getUserWorkouts } from "../_store/workouts";
 import InfoCard from "./dashboardCards/InfoCard";
 import NewsCard from "./dashboardCards/NewsCard";
 import WorkoutCard from "./dashboardCards/WorkoutCard";
+import PageNotFound from "./PageNotFound";
 
 const Dashboard = () => {
   
@@ -31,23 +32,27 @@ const Dashboard = () => {
   
   return(
     <div>
-      <Flex pt="40" justifyContent="center">
-        <Box as='span' display={{base: 'none', md: 'block'}}>
-          <InfoCard workouts={userWorkouts} userEmail={authUser.email}/>
-        </Box>
-        <Box pl='4' pr='4'>
-          
-          {
-            userWorkouts.map(workout => (
-              <WorkoutCard key={workout.id} workout={workout} userEmail={authUser.email} />
-            ))
-          }
+      {userWorkouts.error ? (
+        <PageNotFound/>
+      ) : (
+        <Flex pt="40" justifyContent="center">
+          <Box as='span' display={{base: 'none', md: 'block'}}>
+            <InfoCard workouts={userWorkouts} userEmail={authUser.email}/>
+          </Box>
+          <Box pl='4' pr='4'>
+            
+            {
+              userWorkouts.map(workout => (
+                <WorkoutCard key={workout.id} workout={workout} userEmail={authUser.email} />
+              ))
+            }
 
-        </Box>
-        <Box display={{base: 'none', lg: 'block' }}>
-          <NewsCard/>
-        </Box>
-      </Flex>
+          </Box>
+          <Box display={{base: 'none', lg: 'block' }}>
+            <NewsCard/>
+          </Box>
+        </Flex>
+      )}
     </div>
   );
 };
