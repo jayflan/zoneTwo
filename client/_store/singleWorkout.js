@@ -2,20 +2,20 @@ import axios from 'axios';
 
 //---------- ACTION TYPES ----------//
 
-const GET_USER_WORKOUTS = "GET_USER_WORKOUTS";
+const GET_SINGLE_WORKOUT = "GET_SINGLE_WORKOUT";
 
 //---------- ACTION CREATORS ----------//
 
-const _getUserWorkouts = (userWorkouts) => {
+const _getSingleWorkout = (singleWorkout) => {
   return {
-    type: GET_USER_WORKOUTS,
-    userWorkouts
+    type: GET_SINGLE_WORKOUT,
+    singleWorkout
   }
 }
 
 //---------- THUNKS ----------//
 
-export const getUserWorkouts = (auth) => {
+export const getSingleWorkout = (workoutId) => {
   return async(dispatch) => {
     //authenticate user token
     const token = window.localStorage.getItem('token');
@@ -24,23 +24,24 @@ export const getUserWorkouts = (auth) => {
         authorization: token
       }
     })).data;
-    //get all user workouts
+    //get a single user workout
     const userId = user.id;
     if(!userId) {
-      dispatch(_getUserWorkouts({error: "error"}))
+      dispatch(_getSingleWorkout({error: "error"}));
     } else {
-      const userWorkouts = (await axios.get(`/api/workouts/${userId}`)).data;
-      dispatch(_getUserWorkouts(userWorkouts));
+      const singleWorkout = (await axios.get(`/api/workouts/user/${workoutId}`)).data;
+      dispatch(_getSingleWorkout(singleWorkout));
     }
+
   }
 }
 
 //---------- REDUCER ----------//
 
-export const userWorkouts = (state = [], action) => {
+export const singleWorkout = (state = [], action) => {
   switch(action.type) {
-    case GET_USER_WORKOUTS:
-      return action.userWorkouts
+    case GET_SINGLE_WORKOUT:
+      return action.singleWorkout
     default: 
       return state
   };
