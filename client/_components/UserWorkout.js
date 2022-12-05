@@ -1,9 +1,13 @@
-import { Box, Button, Container, Flex, ListItem, Text, UnorderedList } from "@chakra-ui/react";
+import { 
+  Box, Button, Container, Flex, ListItem, Text, UnorderedList,
+  Table, Thead,Tbody,Tfoot,Tr,Th,Td,TableCaption, TableContainer,
+} from "@chakra-ui/react";
 import PrimaryButton from "./styles/PrimaryButton"
 import React, {useEffect} from "react";
 import { useSelector } from "react-redux";
 import Footer from "./Footer";
 import Newscard from "../_components/dashboardCards/NewsCard";
+import WorkoutTable from "./WorkoutTable";
 import { useDispatch } from "react-redux";
 import { getSingleWorkout } from "../_store/singleWorkout";
 import { useHistory, useParams } from "react-router-dom";
@@ -48,7 +52,9 @@ const UserWorkout = () => {
           {/* Overview, Map, Graphs */}
           <Box flexGrow="1" mr={6}>
             <Box border="1px" borderBottom="0px" borderColor="gray.200" bg="gray.50">
-              <Text p="4" >{`${user.email} - ${workout.name}`}</Text>
+              <Text p="4" >
+                { workout.name ? `${user.email} - ${workout.name}` : ""}
+              </Text>
             </Box>
             <Flex justifyContent="center">
               <Box flexGrow="1" border="1px" borderColor="gray.200">
@@ -93,7 +99,7 @@ const UserWorkout = () => {
                     </Flex>
                   </Box>
                   <Box as="hr" color="gray.300"></Box>
-                  <Box mt="2">Stat Table</Box>
+                  <WorkoutTable/>
                 </Container>
               </Box>
             </Flex>
