@@ -5,6 +5,7 @@ const {
 
 const fs = require('fs');
 const { parseGpx } = require('../server/_api/_apiFunctions');
+const { DateTime, Gpx } = require('../server/logicBackend');
 
 /*
  * seed - this function clears the database, 
@@ -14,29 +15,70 @@ const { parseGpx } = require('../server/_api/_apiFunctions');
 
 async function seed() {
 
-  await db.sync({ force: true }); //clears db & matchs models to tables
+  await db.sync({ force: true }); //clears db & matches models to tables
   console.log("db synced!");
 
 // Creating Users
   const users = await Promise.all([
-    User.create({ email: 'cody@gmail.com', password: 'cody123' }),
-    User.create({ email: 'murphy@msn.com', password: 'murphy123' })
+    User.create({ email: 'cody@gmail.com', password: 'cody123', distUnit: 'miles' }),
+    User.create({ email: 'murphy@msn.com', password: 'murphy123', distUnit: 'kilometers' })
   ]);
+
 // Isolate recently created users for userId properties
   const cody = await User.findOne({where: {email: "cody@gmail.com"}});
   const murphy = await User.findOne({where: {email: "murphy@msn.com"}});
-//Creating Workouts
+
+  //Creating Workouts
   const xmlDataMtn = fs.readFileSync('public/Morning_Mountain_Bike_Ride.gpx', 'utf-8');
   const xmlDataRd = fs.readFileSync('public/Morning_ride.gpx', 'utf-8');
   const gpxMtnWorkout = parseGpx(xmlDataMtn);
   const gpxRdWorkout = parseGpx(xmlDataRd);
+  
+  //workout logicBackend instance creation
+  const gpxMtnMeasurements = new Gpx(gpxMtnWorkout);
+  const gpxRdMeasurements = new Gpx(gpxRdWorkout);
+  const roadTempAvg = gpxRdMeasurements.tempAvg();
+  const roadDistance = gpxRdMeasurements.distance();
+  const roadElevation = gpxRdMeasurements.elevation();
+  const roadTime = gpxRdMeasurements.time();
+  const roadHrAvg = gpxRdMeasurements.hrAvg();
+  const roadCadAvg = gpxRdMeasurements.cadAvg();
+  const roadHrMax = gpxRdMeasurements.hrMax();
+  const roadCadMax = gpxRdMeasurements.cadMax();
+  const mtnTempAvg = gpxMtnMeasurements.tempAvg();  
+  const mtnDistance = gpxMtnMeasurements.distance();
+  const mtnElevation = gpxMtnMeasurements.elevation();
+  const mtnTime = gpxMtnMeasurements.time();
+  const mtnHrAvg = gpxMtnMeasurements.hrAvg();
+  const mtnCadAvg = gpxMtnMeasurements.cadAvg();
+  const mtnHrMax = gpxMtnMeasurements.hrMax();
+  const mtnCadMax = gpxMtnMeasurements.cadMax();
+  const timeTemplateObj = { //for handcoding workouts 1 & 2
+    'seconds': 0,
+    'minutes': 0,
+    'hours': 0
+  };
+
+  //Creating Workouts  
   const workouts = await Promise.all([
-    Workout.create({name: 'Workout #1', description: 'Best workout ever', data: {heartrate: 180, speed: 10}, userId: cody.id}),
-    Workout.create({name: 'Workout #2', description: 'Best workout ever', data: {heartrate: 150, speed: 15}, userId: murphy.id}),
-    Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', data: gpxRdWorkout.data, userId: murphy.id}),
-    Workout.create({name: gpxMtnWorkout.name, description: 'Best workout ever', data: gpxMtnWorkout.data, userId: cody.id}),
-    Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', data: gpxRdWorkout.data, userId: cody.id})
+    Workout.create({name: 'Workout #1', description: 'Best workout ever', 
+      data: {heartrate: 180, speed: 10}, userId: cody.id, distance: 0, elevation: 0, time: timeTemplateObj}),
+    Workout.create({name: 'Workout #2', description: 'Best workout ever', 
+      data: {heartrate: 150, speed: 15}, userId: murphy.id, distance: 0, elevation: 0, time: timeTemplateObj}),
+    Workout.create({name: gpxMtnWorkout.name, description: 'Best workout ever', 
+      data: gpxMtnWorkout.data, userId: murphy.id, distance: mtnDistance, elevation: mtnElevation, 
+        time: mtnTime, hrAvg: mtnHrAvg, hrMax: mtnHrMax, cadAvg: mtnCadAvg, cadMax: mtnCadMax, tempAvg: mtnTempAvg}),
+    Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', 
+      data: gpxRdWorkout.data, userId: murphy.id, distance: roadDistance, elevation: roadElevation, 
+        time: roadTime, hrAvg: roadHrAvg, hrMax: roadHrMax, cadAvg: roadCadAvg, cadMax: roadCadMax, tempAvg: roadTempAvg}),
+    Workout.create({name: gpxMtnWorkout.name, description: 'Best workout ever', 
+      data: gpxMtnWorkout.data, userId: cody.id, distance: mtnDistance, elevation: mtnElevation, 
+        time: mtnTime, hrAvg: mtnHrAvg, hrMax: mtnHrMax, cadAvg: mtnCadAvg, cadMax: mtnCadMax, tempAvg: mtnTempAvg}),
+    Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', 
+      data: gpxRdWorkout.data, userId: cody.id, distance: roadDistance, elevation: roadElevation, 
+        time: roadTime, hrAvg: roadHrAvg, hrMax: roadHrMax, cadAvg: roadCadAvg, cadMax: roadCadMax, tempAvg: roadTempAvg})
   ]);
+
 //Creating Bikes
   const bikes = await Promise.all([
     Bike.create({name: 'Fuji SL', mileage: 100, userId: cody.id}),
@@ -47,7 +89,7 @@ async function seed() {
   console.log(`seeded ${workouts.length} workouts`);
   console.log(`seeded ${bikes.length} bikes`)
 
-  // Finished Return
+  // Finishing Return
   console.log('successfully seeded');
   return {
     users,
@@ -81,7 +123,7 @@ if (module === require.main) {
   runSeed();
 };
 
-/*
+/* Not in use at this time
  * Export 'seed func for testing (see './seed.spec.js')
  */
 
