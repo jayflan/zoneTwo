@@ -91,6 +91,15 @@ describe('Test Db', ()=> {
       it('First workout to have user', async()=> {
         expect(workouts[0].userId).to.be.ok;
       });
+      it('First workout has distance field', async()=> {
+        expect(workouts[0].distance).to.be.greaterThan(-1);
+      });
+      it('First workout has elevation field', async()=> {
+        expect(workouts[0].elevation).to.be.greaterThan(-1);
+      });
+      it('First workout has time field', async()=> {
+        expect(workouts[0].time).to.be.ok;
+      });
     });
   });
 
