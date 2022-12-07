@@ -18,7 +18,7 @@ describe("Auth Routes", () => {
   it("POST /auth/signup", async() => {
     const res = await request(app)
       .post("/auth/signup")
-      .send({ email: "jay@gmail.com", password: "jay123" })
+      .send({ email: "jay@gmail.com", password: "jay123", distUnit: "miles" })
       .expect('Content-Type', /json/)
       .expect(200)
 
