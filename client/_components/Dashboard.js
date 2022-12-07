@@ -43,7 +43,7 @@ const Dashboard = () => {
             
             {
               userWorkouts.map(workout => (
-                <WorkoutCard key={workout.id} workout={workout} userEmail={authUser.email} />
+                <WorkoutCard key={workout.id} workout={workout} user={authUser}/>
               ))
             }
 

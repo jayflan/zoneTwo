@@ -1,12 +1,13 @@
 import React from "react";
 import { MapContainer, Marker, Polyline, Popup, TileLayer, useMap } from "react-leaflet";
-import { getLatLonArr } from "../_functions/measurementFuncs"
+import { getLatLonArr } from "../_functions/logicFrontend"
 
 const Map = (props) => {
 
   const { workout } = props;
   let route, routeArr = [];
-  const firstTrkPt = workout.data[0] || [];
+  let firstTrkPt = workout?.data;
+  firstTrkPt ? firstTrkPt = firstTrkPt[0] : "";
   const firstTrkPtLat = +firstTrkPt.lat || 0;
   const firstTrkPtLon = +firstTrkPt.lon || 0;
 
@@ -29,7 +30,7 @@ const Map = (props) => {
     <MapContainer
       center={[firstTrkPtLat, firstTrkPtLon]}
       scrollWheelZoom={false}
-      style={{height: "300px", width: "40em", zIndex: 0}}
+      style={{height: "300px", zIndex: 0}}
     >
       <MapBoundry/>
       <TileLayer

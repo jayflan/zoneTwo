@@ -36,8 +36,8 @@ router.post("/signup", async (req, res, next)=> {
 router.get("/me", async (req, res, next)=> {
   try {
     const user = await User.findByToken(req.headers.authorization); 
-    const {id, email } = user;
-    res.send({id, email});
+    const {id, email, distUnit } = user;
+    res.send({id, email, distUnit});
   } catch(err) {
     next(err);
     //send error to auth for bad token detection

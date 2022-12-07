@@ -24,6 +24,10 @@ const User = db.define("user", {
   },
   password: {
     type: STRING
+  },
+  distUnit: {
+    type: STRING,
+    allowNull: false
   }
 }
 );
