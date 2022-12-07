@@ -2,7 +2,7 @@ import { Box, chakra, Center, Divider, Flex, FormControl, VStack, Image, Text, B
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { PrimaryButton, SecondaryButton } from "../styles/index";
-import { DateTime } from "../../_functions/measurementFuncs"
+import { DateTime } from "../../_functions/logicFrontend"
 
 const InfoCard = (props) => {
   

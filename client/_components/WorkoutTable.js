@@ -4,16 +4,15 @@ import {
   Box, Button, Container, Flex, ListItem, Text, UnorderedList,
   Table, Thead,Tbody,Tfoot,Tr,Th,Td,TableCaption, TableContainer,
 } from "@chakra-ui/react";
+import { displayFahrenheit } from "../_functions/logicFrontend";
 
 
-const WorkoutTable = () => {
+const WorkoutTable = (props) => {
 
-  //<----- hooks ----->
-  const workout = useSelector((state) => (state.singleWorkout.data)) || [];
-  const gpxDataObj = workout[0];
-  const hr = gpxDataObj?.hr;
-  const cad = gpxDataObj?.cad; 
-  const atemp = gpxDataObj?.atemp; 
+  const { workout, user } = props;
+  const hr = workout.hrAvg;
+  const cad = workout.cadAvg; 
+  const atemp = workout.tempAvg; 
 
   return(
     <div>
@@ -36,8 +35,8 @@ const WorkoutTable = () => {
             {hr ? (
                 <Tr>
                   <Td fontSize="xs">Heart Rate</Td>
-                  <Td fontSize="xs">182bpm</Td>
-                  <Td fontSize="xs">191bpm</Td>
+                  <Td fontSize="xs">{`${workout.hrAvg} bpm`}</Td>
+                  <Td fontSize="xs">{`${workout.hrMax} bpm`}</Td>
                 </Tr>
               ) : ("")
             }
@@ -45,8 +44,8 @@ const WorkoutTable = () => {
             {cad ? (
               <Tr>
                 <Td fontSize="xs">Cadence</Td>
-                <Td fontSize="xs">76</Td>
-                <Td fontSize="xs">128</Td>
+                <Td fontSize="xs">{workout.cadAvg}</Td>
+                <Td fontSize="xs">{workout.cadMax}</Td>
               </Tr>
               ) : ("")
             }
@@ -54,7 +53,7 @@ const WorkoutTable = () => {
             {atemp ? (
               <Tr>
               <Td fontSize="xs">Temperature</Td>
-              <Td fontSize="xs">81F</Td>
+              <Td fontSize="xs">{`${displayFahrenheit(workout.tempAvg)} F`}</Td>
             </Tr>  
               ) : ("")
             }

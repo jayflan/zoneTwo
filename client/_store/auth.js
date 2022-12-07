@@ -29,7 +29,8 @@ export const authenticate = (email, password, method) => async (dispatch) => {
   try {
     const res = await axios.post(`/auth/${method}`, {
       email,
-      password
+      password,
+      distUnit: "miles"  //todo will allow selectable option in future (dropdown after login?)
     });
     window.localStorage.setItem(TOKEN, res.data.token);
     dispatch(me());

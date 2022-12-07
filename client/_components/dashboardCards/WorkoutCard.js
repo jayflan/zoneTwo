@@ -4,21 +4,23 @@ import { useDispatch, useSelector } from "react-redux";
 import Map from "../Map.js";
 // import "leaflet/dist/leaflet.css";
 import { Link } from "react-router-dom";
-import { DateTime, getLatLonArr, wrkoutDist, wrkoutElevGain, hrsMinsSecs, meterToFeet } from "../../_functions/measurementFuncs";
+import { DateTime, displayMilesOrKilos, displayFeetOrMeters, getLatLonArr } from "../../_functions/logicFrontend";
 
 const WorkoutCard = (props) => {
   
   //<------------------------------ hooks or props ------------------------------>//
   
-  const { workout, userEmail } = props;
-
+  const { workout, user } = props;
+  const userEmail = user?.email;
+  const userDistUnit = user?.distUnit;
+  const workoutLength = workout?.time;
   //measurement functions and calcs found here
   let startTime = ""; // timestamp creation
   const firstTrkPt = workout.data[0] || [];
   firstTrkPt ? startTime = firstTrkPt.time : "";
   const dateTime = new DateTime(startTime);
   const workoutTimeStamp = `${dateTime.monthName()} ${dateTime.dateNum()}, ${dateTime.dateFullYear()} at ${dateTime.dateTime()}`;
-  const workoutLength = hrsMinsSecs(workout); // workout length (hrs/min/sec)
+  // const workoutLength = hrsMinsSecs(workout); // workout length (hrs/min/sec)
   
 
   //<------------------------------ event & error handling ------------------------------>//
@@ -77,12 +79,34 @@ const WorkoutCard = (props) => {
             <Flex mb= {6} p={2}>
               <Box pb={2}>
                 <Box><Text as={textSmall}>Distance</Text></Box>
-                <Box><Text as='b' fontSize='xl'>{wrkoutDist(workout, 'miles')}</Text></Box>
+                <Box>
+                  <Text as='b' fontSize='xl'>{displayMilesOrKilos(workout.distance, userDistUnit)}</Text>
+                    {
+                      userDistUnit === 'miles' ? 
+                        <Box as="abbr" title="miles" textDecoration="none !important" pl="1"  >
+                           <Text as='b' fontSize='xl'>mi</Text>
+                        </Box> : 
+                        <Box as="abbr" title="kilometers" textDecoration="none !important" pl="1"  >
+                          <Text as='b' fontSize='xl'>km</Text>
+                        </Box> 
+                    }
+                </Box>
               </Box>
               <Box as={vertLineGray}/>
               <Box pb={2}>
                 <Box><Text as={textSmall}>Elev Gain</Text></Box>
-                <Box><Text as='b' fontSize='xl'>{wrkoutElevGain(workout, 'feet')}</Text></Box>
+                <Box>
+                  <Text as='b' fontSize='xl'>{displayFeetOrMeters(workout.elevation, userDistUnit)}</Text>
+                  {
+                      userDistUnit === 'miles' ? 
+                        <Box as="abbr" title="miles" textDecoration="none !important" pl="1"  >
+                           <Text as='b' fontSize='xl'>ft</Text>
+                        </Box> : 
+                        <Box as="abbr" title="kilometers" textDecoration="none !important" pl="1"  >
+                          <Text as='b' fontSize='xl'>mtr</Text>
+                        </Box> 
+                    }
+                </Box>
               </Box>
               <Box as={vertLineGray}/>
               <Box pb={2}>
