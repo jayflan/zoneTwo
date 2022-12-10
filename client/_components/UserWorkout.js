@@ -4,11 +4,13 @@ import {
 import PrimaryButton from "./styles/PrimaryButton"
 import React, {useEffect} from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import Footer from "./Footer";
 import Newscard from "../_components/dashboardCards/NewsCard";
 import WorkoutTable from "./WorkoutTable";
 import { useDispatch } from "react-redux";
 import { getSingleWorkout } from "../_store/singleWorkout";
+import { getUserWorkouts } from "../_store/workouts";
 import { useHistory, useParams } from "react-router-dom";
 import { DateTime, displayFeetOrMeters, displayMilesOrKilos } from "../_functions/logicFrontend";
 import Map from "../_components/Map";
@@ -20,11 +22,13 @@ const UserWorkout = (props) => {
   const dispatch = useDispatch();
   const urlWorkoutId = useParams();
 
-  const workout = useSelector((state) => state.singleWorkout) || [];
+  const singleWorkout = useSelector((state) => state.singleWorkout) || [];
+  const userWorkouts = useSelector((state) => state.userWorkouts) || [];
   const user = useSelector((state) => state.auth) || [];
   
   useEffect(() => {
-    dispatch(getSingleWorkout(urlWorkoutId.id))
+    dispatch(getSingleWorkout(urlWorkoutId.id));
+    dispatch(getUserWorkouts());
     document.body.style.backgroundColor = "white";
     return function cleanup() {
       document.body.style.backgroundColor = "#071907"; // change background body to black
@@ -34,7 +38,7 @@ const UserWorkout = (props) => {
   const userDistUnit = user?.distUnit;
   
   let startTime = ""; // timestamp creation
-  let firstTrkPt = workout?.data;
+  let firstTrkPt = singleWorkout?.data;
   firstTrkPt ? firstTrkPt = firstTrkPt[0] : "";
   firstTrkPt ? startTime = firstTrkPt.time : "";
   const dateTime = new DateTime(startTime);
@@ -63,26 +67,26 @@ const UserWorkout = (props) => {
           <Box flexGrow="1" mr={6}>
             <Box border="1px" borderBottom="0px" borderColor="gray.200" bg="gray.50">
               <Text p="4" >
-                { workout.name ? `${user.email} - ${workout.name}` : ""}
+                { singleWorkout.name ? `${user.email} - ${singleWorkout.name}` : ""}
               </Text>
             </Box>
             <Flex justifyContent="center">
               <Box flexGrow="1" border="1px" borderColor="gray.200">
                 <Flex direction="column" p="4">
                   <Text variant="textSmall">{workoutTimeStamp}</Text>
-                  <Text as="b" fontSize="3xl">{workout.name}</Text>
+                  <Text as="b" fontSize="3xl">{singleWorkout.name}</Text>
                   <Button as={PrimaryButton} w="32" h="6" fontSize="xs" mt="2"> Add a description</Button>
                 </Flex>
               </Box>
               <Box flexGrow="1" border="1px" borderColor="gray.200">
                 <Container p="4">
                   <Box mb="2">
-                    {workout.data ? (
+                    {singleWorkout.data ? (
                       <Flex as="ul" listStyleType="none">
                         <Box as="li" mr="6">
                           <Flex alignItems="baseline">
                             <Text fontSize='3xl' fontFamily="zTwoNumbers">
-                              {displayMilesOrKilos(workout.distance, userDistUnit)} 
+                              {displayMilesOrKilos(singleWorkout.distance, userDistUnit)} 
                             </Text>
                             {
                               userDistUnit === 'miles' ? 
@@ -99,7 +103,7 @@ const UserWorkout = (props) => {
                         <Box as="li">
                           <Box mr="6">
                             <Text fontSize='3xl' fontFamily="zTwoNumbers">{
-                              `${workout.time?.hours}:${workout.time?.minutes}:${workout.time?.seconds}`
+                              `${singleWorkout.time?.hours}:${singleWorkout.time?.minutes}:${singleWorkout.time?.seconds}`
                             }</Text>
                           </Box>
                           <Box><Text variant='textSmall'>Time</Text></Box>
@@ -107,7 +111,7 @@ const UserWorkout = (props) => {
                         <Box as="li">
                           <Flex alignItems="baseline">
                             <Text fontSize='3xl' fontFamily="zTwoNumbers">
-                              {displayFeetOrMeters(workout.elevation, userDistUnit)} 
+                              {displayFeetOrMeters(singleWorkout.elevation, userDistUnit)} 
                             </Text>
                               <Box as="abbr" title="feet" textDecoration="none !important" pl="1">
                                 ft
@@ -120,7 +124,7 @@ const UserWorkout = (props) => {
                       ) : ("")}
                   </Box>
                   <Box as="hr" color="gray.300"></Box>
-                  <WorkoutTable workout={workout} user={user}/>
+                  <WorkoutTable workout={singleWorkout} user={user}/>
                 </Container>
               </Box>
             </Flex>
@@ -128,7 +132,7 @@ const UserWorkout = (props) => {
               {/* Dispaly map if data latitude point exists */}
               {
                 firstTrkPt?.lat ? (
-                  <Map workout={ workout }/>
+                  <Map workout={ singleWorkout }/>
                 ) : ("")
               }
             </Box>
@@ -141,11 +145,13 @@ const UserWorkout = (props) => {
             <Container mt={10} mb={10}>
               <Text>Your Recent Activities</Text>
               <UnorderedList mb={2} listStyleType="none">
-                <ListItem mb={1}>Workout #1</ListItem>
-                <ListItem mb={1}>Workout #1</ListItem>
-                <ListItem mb={1}>Workout #1</ListItem>
-                <ListItem mb={1}>Workout #1</ListItem>
-                <ListItem mb={1}>Workout #1</ListItem>
+                {userWorkouts.map((currWorkout, idx) => (
+                  idx < 6 ? (
+                    <Link key={currWorkout.id} to={`/workouts/user/${currWorkout.id}`}>
+                      <ListItem  mb={1} fontSize="sm">{currWorkout.name}</ListItem>
+                    </Link>
+                    ) : ("")
+                ))}
               </UnorderedList>
             </Container>
             <Container mt={10} mb={10}><Newscard/></Container>
