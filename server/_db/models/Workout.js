@@ -54,6 +54,14 @@ const Workout = db.define('workout', {
   tempAvg: {
     type: INTEGER,
     allowNull: true
+  },
+  speedAvg: {
+    type: FLOAT,
+    allowNull: true
+  },
+  speedMax: {
+    type: FLOAT,
+    allowNull: true
   }
 });
 
