@@ -3,12 +3,58 @@ class Gpx {
     this.gpx = parsedGpxFile;
   }
 
-  speedAvg() {
-
+  createSpeedTrkPtArr(distanceObj, distUnit = 'kilometers') {
+    const workoutArr = this.gpx.data;
+    const distArr = distanceObj.distArr;
+    //edge case of NO trkPts
+    if(!workoutArr[0].lat) return [];
+      return distArr.reduce((accum, currTrkPt, Idx) => {
+        const prevTrkPt = distArr[Idx - 1];
+        //currTrkPt start is never first index of arr
+        if(Idx === 0) return accum;
+        // const prevLatLng = L.latLng(
+        //   prevTrkPt.lat,
+        //   prevTrkPt.lon
+        // );
+        // const currLatLng = L.latLng(
+        //   currTrkPt.lat,
+        //   currTrkPt.lon
+        // );
+        const prevTime = new Date(prevTrkPt.time).getTime(), currTime = new Date(currTrkPt.time).getTime();
+        const elapsedSeconds = (currTime - prevTime) / 1000;
+        const elapsedMinutes = elapsedSeconds / 60;
+        const elapsedHrs = elapsedMinutes / 60;
+        
+        const distanceMeters = currTrkPt.distance;
+        const speedKph = ((distanceMeters / 1000) / (elapsedHrs)); // in kilometers per hour
+        const speedMph = speedKph / 1.60934;
+        
+        if(distUnit === 'miles') {
+          accum.push(speedMph);
+        } else accum.push(speedKph);
+        return accum;
+      }, []);
   }
 
-  speedMax() {
+  speedAvg(speedArr) {
+    let counterLength = 0;
+    const speedSum = speedArr.reduce((accum, currElem) => {
+      if(currElem > 0) {
+        accum += currElem; 
+        counterLength++
+      }
+      return accum;
+    }, 0);
+    return Math.round((speedSum / counterLength) * 10 ) / 10;
+  }
 
+  speedMax(speedArr) {
+    //to be used with instance of speed trackPts
+    let maxNum = speedArr[0];
+    speedArr.map((currElem) => {
+      currElem > maxNum ? maxNum = currElem : ""
+    })
+    return Math.round(maxNum * 10) / 10;
   }
 
   tempAvg() {
@@ -58,7 +104,6 @@ class Gpx {
       }
       return accum;
     }, 0);
-    console.log('counter-->;', counterLength, 'workoutArrLength--->:', workoutArr.length)
     if(!workoutArr[0].cad) return 0;  //return 0 if no cad property exists
     return Math.round(cadSum / counterLength)
   }
@@ -72,38 +117,52 @@ class Gpx {
     }, 0);
   }
 
-  distance(unit = 'miles') {  // miles or kilometers
-    //using haversine formula - reference: https://web.archive.org/web/20180705004706/http://mathforum.org/library/drmath/view/51879.html
+  distance(unit = 'kilometers') {  // miles or kilometers
+    //using haversine formula - reference: https://www.movable-type.co.uk/scripts/latlong.html
     const data = this.gpx.data;
     const DtoR = 0.017453293 // converts degrees to radians: pi/180
     
     let R = 3956; // radius of earth in miles
     if(unit === 'kilometers') R = 6367; // radius of earth in kilometers
     
-    let resultDist = 0;
+    // let resultDist = 0;
+    let distArr = [], resultObj = {}, resultDist = 0, prevIdx = 0;
+    if(!data[0]) return {};
     if(data[0]) { // happy path
-      let prevIdx = 0;
-      resultDist = data.reduce((accum, currCoords, idx) => {
 
-        const currLat = +currCoords.lat, currLon = +currCoords.lon;
-        const prevLat = +data[prevIdx].lat, prevLon = +data[prevIdx].lon;
-        const currRLat = currLat * DtoR, currRLon = currLon * DtoR;
-        const prevRLat = prevLat * DtoR, prevRLon = prevLon * DtoR;  
-        const dLat = currRLat - prevRLat, dLon = currRLon - prevRLon;
+    resultDist = data.reduce((accum, currCoords, idx) => {
 
-        const a = Math.pow(Math.sin(dLat/2),2) 
-          + Math.cos(currRLat) 
-          * Math.cos(prevRLat) 
-          * Math.pow(Math.sin(dLon/2),2);
-          
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const currLat = +currCoords.lat, currLon = +currCoords.lon;
+      const prevLat = +data[prevIdx].lat, prevLon = +data[prevIdx].lon;
+      const currRLat = currLat * DtoR, currRLon = currLon * DtoR;
+      const prevRLat = prevLat * DtoR, prevRLon = prevLon * DtoR;  
+      const dLat = currRLat - prevRLat, dLon = currRLon - prevRLon;
 
-          accum = accum + c; 
-          prevIdx = idx;
-          return accum;
-        },0);
-      }
-      return Math.round((R * resultDist) * 10) / 10;
+      const a = Math.pow(Math.sin(dLat/2),2) 
+        + Math.cos(currRLat) 
+        * Math.cos(prevRLat) 
+        * Math.pow(Math.sin(dLon/2),2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      //!Why is each d 'trkpt' NOT > 0, if in R meters?
+        //!Answer - trkpts are in mi/km, need to 'un-dilute' them
+      const d = R * c;
+      let dTrkPt = d; 
+      if(unit === 'kilometers') { // convert from radius to meters
+        dTrkPt = d * 1000
+      };
+
+      distArr.push({'distance': dTrkPt, 'time': currCoords.time});
+      accum = accum + d;
+      prevIdx = idx;
+      return accum;
+
+    },0);
+  }
+
+    resultObj.totalDist = Math.round(resultDist * 10) / 10
+    resultObj.distArr = distArr; 
+    
+    return resultObj;
   }
 
   elevation(unitMeasure = 'meter') {  // default elev unit is in meters
@@ -148,7 +207,8 @@ class Gpx {
     return {
       'seconds': this.timeTo2Digits(seconds),
       'minutes': this.timeTo2Digits(minutes),
-      'hours': this.timeTo2Digits(hours)
+      'hours': this.timeTo2Digits(hours),
+      'totalSecs': (end - start) / 1000
     };
   }
 
