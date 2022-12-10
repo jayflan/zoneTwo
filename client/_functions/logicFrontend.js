@@ -40,8 +40,8 @@ export const getLatLonArr = (arrLatLon) => {
 }
 
 export const displayMilesOrKilos = (dist,userDistUnit) => {
-  if(userDistUnit === 'miles') return dist; //default calc in miles
-  else return Math.round((dist * 1.60934) *10) / 10;
+  if(userDistUnit === 'kilometers') return dist; //default calc in kilometers
+  else return Math.round((dist / 1.60934) *10) / 10;
 }
 
 export const displayFeetOrMeters = (elev,userDistUnit) => {
