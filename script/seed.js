@@ -5,7 +5,7 @@ const {
 
 const fs = require('fs');
 const { parseGpx } = require('../server/_api/_apiFunctions');
-const { DateTime, Gpx } = require('../server/logicBackend');
+const { Gpx } = require('../server/logicBackend');
 
 /*
  * seed - this function clears the database, 
@@ -39,20 +39,33 @@ async function seed() {
   const gpxRdMeasurements = new Gpx(gpxRdWorkout);
   const roadTempAvg = gpxRdMeasurements.tempAvg();
   const roadDistance = gpxRdMeasurements.distance();
+  // console.log(roadDistance);
+  const roadDistanceTotal = roadDistance.totalDist;
   const roadElevation = gpxRdMeasurements.elevation();
   const roadTime = gpxRdMeasurements.time();
   const roadHrAvg = gpxRdMeasurements.hrAvg();
   const roadCadAvg = gpxRdMeasurements.cadAvg();
   const roadHrMax = gpxRdMeasurements.hrMax();
   const roadCadMax = gpxRdMeasurements.cadMax();
+
+  const roadSpeedArrKph = gpxRdMeasurements.createSpeedTrkPtArr(roadDistance);
+  const roadSpeedAvg = gpxRdMeasurements.speedAvg(roadSpeedArrKph);
+  const roadSpeedMax = gpxRdMeasurements.speedMax(roadSpeedArrKph);
+    
   const mtnTempAvg = gpxMtnMeasurements.tempAvg();  
   const mtnDistance = gpxMtnMeasurements.distance();
+  const mtnDistanceTotal = mtnDistance.totalDist;
   const mtnElevation = gpxMtnMeasurements.elevation();
   const mtnTime = gpxMtnMeasurements.time();
   const mtnHrAvg = gpxMtnMeasurements.hrAvg();
   const mtnCadAvg = gpxMtnMeasurements.cadAvg();
   const mtnHrMax = gpxMtnMeasurements.hrMax();
   const mtnCadMax = gpxMtnMeasurements.cadMax();
+
+  const mtnSpeedArrKph = gpxMtnMeasurements.createSpeedTrkPtArr(mtnDistance);
+  const mtnSpeedAvg = gpxMtnMeasurements.speedAvg(mtnSpeedArrKph);
+  const mtnSpeedMax = gpxMtnMeasurements.speedMax(mtnSpeedArrKph);
+  
   const timeTemplateObj = { //for handcoding workouts 1 & 2
     'seconds': 0,
     'minutes': 0,
@@ -66,17 +79,21 @@ async function seed() {
     Workout.create({name: 'Workout #2', description: 'Best workout ever', 
       data: {heartrate: 150, speed: 15}, userId: murphy.id, distance: 0, elevation: 0, time: timeTemplateObj}),
     Workout.create({name: gpxMtnWorkout.name, description: 'Best workout ever', 
-      data: gpxMtnWorkout.data, userId: murphy.id, distance: mtnDistance, elevation: mtnElevation, 
-        time: mtnTime, hrAvg: mtnHrAvg, hrMax: mtnHrMax, cadAvg: mtnCadAvg, cadMax: mtnCadMax, tempAvg: mtnTempAvg}),
+      data: gpxMtnWorkout.data, userId: murphy.id, distance: mtnDistanceTotal, elevation: mtnElevation, 
+        time: mtnTime, hrAvg: mtnHrAvg, hrMax: mtnHrMax, cadAvg: mtnCadAvg, cadMax: mtnCadMax, tempAvg: mtnTempAvg,
+        speedAvg: mtnSpeedAvg, speedMax: mtnSpeedMax}),
     Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', 
-      data: gpxRdWorkout.data, userId: murphy.id, distance: roadDistance, elevation: roadElevation, 
-        time: roadTime, hrAvg: roadHrAvg, hrMax: roadHrMax, cadAvg: roadCadAvg, cadMax: roadCadMax, tempAvg: roadTempAvg}),
+      data: gpxRdWorkout.data, userId: murphy.id, distance: roadDistanceTotal, elevation: roadElevation, 
+        time: roadTime, hrAvg: roadHrAvg, hrMax: roadHrMax, cadAvg: roadCadAvg, cadMax: roadCadMax, tempAvg: roadTempAvg,
+        speedAvg: roadSpeedAvg, speedMax: roadSpeedMax}),
     Workout.create({name: gpxMtnWorkout.name, description: 'Best workout ever', 
-      data: gpxMtnWorkout.data, userId: cody.id, distance: mtnDistance, elevation: mtnElevation, 
-        time: mtnTime, hrAvg: mtnHrAvg, hrMax: mtnHrMax, cadAvg: mtnCadAvg, cadMax: mtnCadMax, tempAvg: mtnTempAvg}),
+      data: gpxMtnWorkout.data, userId: cody.id, distance: mtnDistanceTotal, elevation: mtnElevation, 
+        time: mtnTime, hrAvg: mtnHrAvg, hrMax: mtnHrMax, cadAvg: mtnCadAvg, cadMax: mtnCadMax, tempAvg: mtnTempAvg,
+        speedAvg: mtnSpeedAvg, speedMax: mtnSpeedMax}),
     Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', 
-      data: gpxRdWorkout.data, userId: cody.id, distance: roadDistance, elevation: roadElevation, 
-        time: roadTime, hrAvg: roadHrAvg, hrMax: roadHrMax, cadAvg: roadCadAvg, cadMax: roadCadMax, tempAvg: roadTempAvg})
+      data: gpxRdWorkout.data, userId: cody.id, distance: roadDistanceTotal, elevation: roadElevation, 
+        time: roadTime, hrAvg: roadHrAvg, hrMax: roadHrMax, cadAvg: roadCadAvg, cadMax: roadCadMax, tempAvg: roadTempAvg,
+        speedAvg: roadSpeedAvg, speedMax: roadSpeedMax})
   ]);
 
 //Creating Bikes
