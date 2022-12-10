@@ -4,7 +4,7 @@ import {
   Box, Button, Container, Flex, ListItem, Text, UnorderedList,
   Table, Thead,Tbody,Tfoot,Tr,Th,Td,TableCaption, TableContainer,
 } from "@chakra-ui/react";
-import { displayFahrenheit } from "../_functions/logicFrontend";
+import {  displayMilesOrKilos,displayFahrenheit } from "../_functions/logicFrontend";
 
 
 const WorkoutTable = (props) => {
@@ -13,6 +13,7 @@ const WorkoutTable = (props) => {
   const hr = workout.hrAvg;
   const cad = workout.cadAvg; 
   const atemp = workout.tempAvg; 
+  const speed = workout.speedAvg;
 
   return(
     <div>
@@ -26,11 +27,18 @@ const WorkoutTable = (props) => {
             </Tr>
           </Thead>
           <Tbody>
+            
+            {speed ? (
             <Tr>
               <Td fontSize="xs">Speed</Td>
-              <Td fontSize="xs">6.7mi/h</Td>
-              <Td fontSize="xs">15.2mi/h</Td>
+              <Td fontSize="xs">{displayMilesOrKilos(workout.speedAvg, user.userDist)}
+                { user.distUnit === 'miles' ? <abbr> mi/h</abbr> : <abbr> km/h</abbr> }
+              </Td>
+              <Td fontSize="xs">{displayMilesOrKilos(workout.speedMax, user.userDist)}
+                { user.distUnit === 'miles' ? <abbr> mi/h</abbr> : <abbr> km/h</abbr> }
+              </Td>
             </Tr>
+            ) : ("")}
             
             {hr ? (
                 <Tr>
