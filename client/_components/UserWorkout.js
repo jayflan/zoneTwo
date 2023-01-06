@@ -1,5 +1,5 @@
 import { 
-  Box, Button, Container, Flex, ListItem, Text, UnorderedList,
+  Box, Button, Center, Container, Flex, ListItem, Text, UnorderedList,
 } from "@chakra-ui/react";
 import PrimaryButton from "./styles/PrimaryButton"
 import React, {useEffect} from "react";
@@ -14,6 +14,9 @@ import { getUserWorkouts } from "../_store/workouts";
 import { useHistory, useParams } from "react-router-dom";
 import { DateTime, displayFeetOrMeters, displayMilesOrKilos } from "../_functions/logicFrontend";
 import Map from "../_components/Map";
+import GraphOverview from "./GraphOverview";
+import AreaChart from "./AreaChart";
+import BarChart from "./BarChart";
 
 const UserWorkout = (props) => {
 
@@ -136,7 +139,9 @@ const UserWorkout = (props) => {
                 ) : ("")
               }
             </Box>
-            <Box border="1px" borderColor="gray.200">Graph</Box>
+            <Box border="1px" borderColor="gray.200">
+              <AreaChart data={ userWorkouts }/>
+            </Box>
           </Box>
         </Flex>
         {/* Footers */}
