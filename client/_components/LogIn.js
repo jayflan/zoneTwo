@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { PrimaryButton, SecondaryButton } from "./styles/index";
 import { authenticate } from "../_store/auth";
+import axios from "axios";
 
 const LogIn = () => {
   
@@ -55,6 +56,14 @@ const LogIn = () => {
     };
     
   }
+
+  //Edu. Note - Had trouble getting this func to 'return'
+    //Fix/Tip === 
+  const handleGoogleOAuth = async (e) => {
+    e.preventDefault();
+    const authUrl = (await axios.get('/auth/google/authurl')).data;
+    window.location.href = authUrl;
+  }
   
 //<------------------------------ React render ------------------------------>//
 
@@ -72,7 +81,11 @@ const LogIn = () => {
               </Text>
             </Center>
             <VStack spacing='5' p='4' mt="4" mb="4">
-              <PrimaryButton w='300px'>Login with Google</PrimaryButton>
+              {/* <a href={handleGoogleOAuth()}> */}
+                <PrimaryButton w='300px' onClick={(e)=>{handleGoogleOAuth(e)}}>
+                  Login with Google
+                </PrimaryButton>
+              {/* </a> */}
               <PrimaryButton w='300px'>Login with Apple</PrimaryButton>
               <Text color="gray.400">or login with your email address</Text>
 
