@@ -47,13 +47,26 @@ User.prototype.generateToken = function () {
 
 //<----- classMethods ----->
 
-User.authenticate = async function ({ email, password }) {
-  const user = await this.findOne({ where: { email }});
-  if(!user || !(await user.correctPassword(password))) {
-    const error = Error("Incorrect username/password");
-    error.status = 401;
-    throw error;
-  };
+User.authenticate = async function ({ email, password, oauth }) {
+  let user = await this.findOne({ where: { email }});
+  //eval if oauth login/signup
+  if(!user && oauth) {
+      try{
+        user = await this.create({email: email, password: '', distUnit: 'miles'});
+      } catch(err) {
+        const error = Error("Error");
+        error.status = 401;
+        throw error;
+      }
+  } else {
+    //eval if not oauth login
+    if(!user || !(await user.correctPassword(password))) {
+      const error = Error("Incorrect username/password");
+      error.status = 401;
+      throw error;
+    };
+  }
+  
   return user.generateToken();
 };
 
