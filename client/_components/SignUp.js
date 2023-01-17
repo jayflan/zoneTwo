@@ -5,6 +5,13 @@ import { Link } from "react-router-dom";
 import { PrimaryButton, SecondaryButton } from "./styles/index";
 import { authenticate, me } from "../_store/auth";
 
+/*Google OAuth Notes (to educate the dev)
+  What's needed to get up and going:
+  1. A Google Cloud Service account (to create app project and create client credentials)
+  2. Node library called "googleapis"
+  3. Create node route for callback in your app's api
+  4. 
+*/
 
 const SignUp = () => {
 
