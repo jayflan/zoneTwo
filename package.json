@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "BABEL_ENV=production webpack",
+    "build": "webpack",
+    "build:prod": "BABEL_ENV=production webpack",
     "build:dev": "npm run build -- --watch --mode=development",
     "seed": " node script/seed.js",
     "start": "NODE_ENV=production node server/index.js",
