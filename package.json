@@ -8,7 +8,7 @@
     "build:prod": "BABEL_ENV=production webpack",
     "build:dev": "npm run build -- --watch --mode=development",
     "seed": " node script/seed.js",
-    "start": "NODE_ENV=production node server/index.js",
+    "start": "node server/index.js",
     "start-server": "JWT=process.env.JWT nodemon server -e html,js,scss --ignore public --ignore client",
     "start:dev": "BABEL_ENV=development npm run build:dev & npm run start-server",
     "test": "NODE_ENV=test JWT=process.env.JWT mocha --require global-jsdom/register --require @babel/register --require ignore-styles \"./**/**/*.spec.js\"",

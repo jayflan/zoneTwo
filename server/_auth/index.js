@@ -129,14 +129,14 @@ router.get("/google/callback", async (req, res, next) => {
     //send JWT back to client and set token in localstorage
     
     let hrefUrl = ""; //<--check if using prod or dev for href link
-    process.env.PORT ? hrefUrl = 'zoneTwo' : hrefUrl = 'localhost:3000';
+    process.env.PORT ? hrefUrl = 'zoneTwo.onrender.com' : hrefUrl = 'localhost:3000';
     res.send(`
       <html>
         <head>
           <script>
             window.localStorage.setItem('token', '${authUserToken}')
             //!!: Will have to add 'https' if needed in future!!
-            window.location.href = 'http://${hrefUrl}/dashboard'
+            window.location.href = 'https://${hrefUrl}/dashboard'
           </script>
         </head>
       </html>
