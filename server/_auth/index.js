@@ -52,10 +52,18 @@ router.get("/me", async (req, res, next)=> {
 
 //google OAuth to GET user access token
 
+const redirectURL = () => {
+  if(process.env.PORT) {
+    return process.env.REDIRECT_URL
+  } else {
+    return process.env.LOCAL_REDIRECT_URL
+  }
+}
+
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  process.env.REDIRECT_URL
+  redirectURL()
 );
 
 //create google content url for client to sign in with
@@ -80,6 +88,7 @@ router.get("/google/authurl", async (req, res, next) => {
 
 router.get("/google/callback", async (req, res, next) => {
   try {
+    console.log('we are in the callback!!!!!')
     const code = req.query.code;
     const { tokens } = await oauth2Client.getToken(code);
 
@@ -129,14 +138,14 @@ router.get("/google/callback", async (req, res, next) => {
     //send JWT back to client and set token in localstorage
     
     let hrefUrl = ""; //<--check if using prod or dev for href link
-    process.env.PORT ? hrefUrl = 'zoneTwo.onrender.com' : hrefUrl = 'localhost:3000';
+    process.env.PORT ? hrefDomain = 'https://zoneTwo.onrender.com' : hrefDomain = 'http://localhost:3000';
     res.send(`
       <html>
         <head>
           <script>
             window.localStorage.setItem('token', '${authUserToken}')
             //!!: Will have to add 'https' if needed in future!!
-            window.location.href = 'https://${hrefUrl}/dashboard'
+            window.location.href = '${hrefUrl}/dashboard'
           </script>
         </head>
       </html>
