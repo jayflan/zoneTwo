@@ -13,7 +13,7 @@ if(process.env.LOGGING === "true") {
 };
 
 const db = new Sequelize(
-  process.env.DATABASE_URL || `postgres://postgres@localhost:5432/${databaseName}`,
+  process.env.DATABASE_URL || `postgres://jayflan@localhost:5432/${databaseName}`,
 );
 
 
