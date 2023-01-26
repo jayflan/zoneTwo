@@ -9,6 +9,7 @@ import { getUserWorkouts } from "../_store/workouts";
 import InfoCard from "./dashboardCards/InfoCard";
 import NewsCard from "./dashboardCards/NewsCard";
 import WorkoutCard from "./dashboardCards/WorkoutCard";
+import WorkoutCardBlank from "./dashboardCards/WorkoutCardBlank";
 import PageNotFound from "./PageNotFound";
 
 const Dashboard = () => {
@@ -40,13 +41,15 @@ const Dashboard = () => {
             <InfoCard workouts={userWorkouts} userEmail={authUser.email}/>
           </Box>
           <Box pl='4' pr='4'>
-            
             {
-              userWorkouts.map(workout => (
-                <WorkoutCard key={workout.id} workout={workout} user={authUser}/>
-              ))
+              !userWorkouts.length
+              ? 
+                <WorkoutCardBlank user={authUser}/>
+              : 
+                userWorkouts.map(workout => (
+                  <WorkoutCard key={workout.id} workout={workout} user={authUser}/>
+                ))
             }
-
           </Box>
           <Box display={{base: 'none', lg: 'block' }}>
             <NewsCard/>
