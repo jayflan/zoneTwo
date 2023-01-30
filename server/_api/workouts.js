@@ -1,5 +1,8 @@
 const router = require("express").Router();
 const Workout = require("../_db/models/Workout");
+const User = require("../_db/models/User");
+const { parseGpx } = require('../_api/_apiFunctions')
+const { Gpx } = require('../logicBackend');
 module.exports = router;
 
 //GET all workouts
@@ -37,4 +40,56 @@ router.get("/user/:id", async(req, res, next) => {
   } catch(err) {
     next(err);
   }
-})
+});
+
+//POST single User Workout from user GPX file
+router.post("/upload/user/:id", async(req, res, next) => {
+  try {
+      //find user in db
+    const user = await User.findByPk(req.params.id);
+      //get req file data
+    const { fileName, fileData} = req.body;
+      //create dataObjGpx
+    const parsedGpx = parseGpx(fileData);
+    
+      //workout logicBackend instance creation
+    const gpxMeasurements = new Gpx(parsedGpx);
+    
+    const tempAvg = gpxMeasurements.tempAvg();
+    const distance = gpxMeasurements.distance();
+    const totalDistance = distance.totalDist;
+    const elevation = gpxMeasurements.elevation();
+    const time = gpxMeasurements.time();
+    const avgHrtRate = gpxMeasurements.hrAvg();
+    const avgCadence = gpxMeasurements.cadAvg();
+    const maxHrtRate = gpxMeasurements.hrMax();
+    const maxCadence = gpxMeasurements.cadMax();
+
+    const speedArrKph = gpxMeasurements.createSpeedTrkPtArr(distance);
+    const speedAvg = gpxMeasurements.speedAvg(speedArrKph);
+    const speedMax = gpxMeasurements.speedMax(speedArrKph);
+
+      //post dataObjGpx to user's Workout db/model using gpxCalc methods
+    const workout = await Workout.create({
+      name: fileName,
+      description: 'Best workout ever',
+      data: parsedGpx.data,
+      userId: user.id,
+      distance: totalDistance,
+      elevation: elevation,
+      time: time,
+      hrAvg: avgHrtRate,
+      hrMax: maxHrtRate,
+      cadAvg: avgCadence,
+      cadMax: maxCadence,
+      tempAvg: tempAvg,
+      speedAvg: speedAvg,
+      speedMax: speedMax
+    })
+      //send res post ok and new-posted-workout record to frontend redux
+    res.status(201).send(workout);
+  } catch(err) {
+    next(err);
+  }
+
+});
