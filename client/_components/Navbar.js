@@ -2,6 +2,7 @@ import React, { useEffect} from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Box, Flex, Button, Text } from "@chakra-ui/react";
 import SecondaryButton from "./styles/SecondaryButton";
+import ModalUpload from "./ModalUpload";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, me } from "../_store/auth";
 import { setScrollLock } from "../_hooks/useScrollLock";
@@ -37,11 +38,15 @@ const Navbar = () => {
         </Flex>
         :
         <Flex direction='row' justify='space-between' bg='gray.50' h='full'>
-          <Box as='div' pl='5' m='5' pt='1' fontSize='xl'><Text as='b'>zoneTwo</Text></Box>  
-          {/*LogIn / LogOut / SignUp button path toggle*/}
+          <Box as='div' pl='5' m='5' pt='1' fontSize='xl'><Text as='b'>zoneTwo</Text></Box>
+          <Box>
+            <ModalUpload/>
+            {/*LogIn / LogOut / SignUp button path toggle*/}
             <Link to="/login">
               <SecondaryButton m='5' mr='10' onClick={()=> dispatch(logout())}>LogOut</SecondaryButton>
             </Link>
+          </Box>    
+          
         </Flex>
   
       }
