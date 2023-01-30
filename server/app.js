@@ -1,13 +1,21 @@
 const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
-
+// const bodyParser = require("body-parser");
+// const multer = require('multer');
 
 const app = express();
 
 // middleware (logging & parsing)
+app.use(express.json({ limit: '5mb'}));
+app.use(express.urlencoded({
+  limit: '5mb',
+  extended: true,
+  }));
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+
 app.use(morgan("dev"));
-app.use(express.json());
 // static middleware
 app.get("/", (req, res) => 
   res.sendFile(path.join(__dirname, "..", "public/index.html"))
