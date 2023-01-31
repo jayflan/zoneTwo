@@ -89,6 +89,7 @@ router.post("/upload/user/:id", async(req, res, next) => {
       //send res post ok and new-posted-workout record to frontend redux
     res.status(201).send(workout);
   } catch(err) {
+    res.send({error: 'Error: Please cancel &  upload again'}).status(500);
     next(err);
   }
 
