@@ -2,10 +2,10 @@ import React, { useEffect} from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Box, Flex, Button, Text } from "@chakra-ui/react";
 import SecondaryButton from "./styles/SecondaryButton";
-import ModalUpload from "./ModalUpload";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, me } from "../_store/auth";
 import { setScrollLock } from "../_hooks/useScrollLock";
+import ModalUpload from "./modals/ModalUpload";
 
 const Navbar = () => {
 
