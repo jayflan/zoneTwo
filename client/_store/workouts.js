@@ -43,7 +43,7 @@ export const getUserWorkouts = (auth) => {
   }
 }
 
-export const addUserWorkout = (fileName, selectedFile) => {
+export const addUserWorkout = (userWorkout) => {
   
   return async(dispatch) => {
     //authenticate user token
@@ -57,36 +57,14 @@ export const addUserWorkout = (fileName, selectedFile) => {
 
     //post new workout to user
     const userId = user.id;
-
     if(!userId) {
       dispatch(_addUserWorkout({error: "error"}));
     } else {
-        //read & prep file for upload
-      const reader = new FileReader();
-        //Todo check that file is indeed gpx/xml and throw error if NOT
-        //Todo ex. reader.readAsDataURL(selectedFile) <-- to change file into string
-      reader.readAsBinaryString(selectedFile);
-
-      reader.onload = async () => {
-        const file = reader.result;
-        //make POST inside 'reader.onload' to capture reader result
-        const formData = {fileName: fileName, fileData: file};
-        const userWorkout = (await axios.post(`api/workouts/upload/user/${userId}`, formData,
-          {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        )).data;
-
-        dispatch(_addUserWorkout(userWorkout));
-      
-      }
-              
-      
+      dispatch(_addUserWorkout(userWorkout));  
     }
   }  
-}
+
+}  
 //---------- REDUCER ----------//
 
 export const userWorkouts = (state = [], action) => {
