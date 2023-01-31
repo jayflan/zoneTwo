@@ -72,7 +72,6 @@ const ModalUpload = () => {
                     setUploadStatus('Done');
                     dispatch(addUserWorkout(userWorkout));
                     setTimeout(() => {
-                        console.log('Delayed for 5 seconds');
                         setUploadStatus('');
                         setSaveBtnToggle(true);
                         if(!userWorkout.error) onClose();
