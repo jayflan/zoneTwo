@@ -72,7 +72,7 @@ export const userWorkouts = (state = [], action) => {
     case GET_USER_WORKOUTS:
       return action.userWorkouts
     case ADD_USER_WORKOUT:
-      return [...state, action.userWorkout]
+      return [action.userWorkout, ...state]
     default: 
       return state
   };
