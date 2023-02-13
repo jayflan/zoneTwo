@@ -1,8 +1,7 @@
 const router = require("express").Router();
 const Workout = require("../_db/models/Workout");
 const User = require("../_db/models/User");
-const { parseGpx } = require('../_api/_apiFunctions')
-const { Gpx } = require('../logicBackend');
+const { Gpx, parseGpx } = require('../backendGpx');
 module.exports = router;
 
 //GET all workouts
@@ -55,9 +54,11 @@ router.post("/upload/user/:id", async(req, res, next) => {
       //create dataObjGpx
     const parsedGpx = parseGpx(fileData);
     
-      //workout logicBackend instance creation
-    const gpxMeasurements = new Gpx(parsedGpx);
+    const dateWorkout = parsedGpx.data[0]['time'];
     
+      //workout sinstance creation
+    const gpxMeasurements = new Gpx(parsedGpx);
+
     const tempAvg = gpxMeasurements.tempAvg();
     const distance = gpxMeasurements.distance();
     const totalDistance = distance.totalDist;
@@ -77,6 +78,7 @@ router.post("/upload/user/:id", async(req, res, next) => {
       name: fileName,
       description: 'Best workout ever',
       data: parsedGpx.data,
+      date: dateWorkout,
       userId: user.id,
       distance: totalDistance,
       elevation: elevation,

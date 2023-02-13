@@ -4,8 +4,7 @@ const {
  } = require("../server/_db");
 
 const fs = require('fs');
-const { parseGpx } = require('../server/_api/_apiFunctions');
-const { Gpx } = require('../server/logicBackend');
+const { Gpx, parseGpx } = require('../server/backendGpx');
 
 /*
  * seed - this function clears the database, 
@@ -38,7 +37,7 @@ async function seed() {
   const dateMtnWorkout = gpxMtnWorkout.data[0]['time'];
   const dateRdWorkout = gpxRdWorkout.data[0]['time'];
   
-  //workout logicBackend instance creation
+  //workout instance creation
   const gpxMtnMeasurements = new Gpx(gpxMtnWorkout);
   const gpxRdMeasurements = new Gpx(gpxRdWorkout);
   const roadTempAvg = gpxRdMeasurements.tempAvg();
