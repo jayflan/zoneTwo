@@ -10,7 +10,7 @@ Current Documentation using Jupyter Notebook (links to docs in this repo):
 
 <ul>
   <li>
-    <a href='https://github.com/jayflan/docs/blob/main/zoneTwo/logicBackend.ipynb'>Backend Logic</a>
+    <a href='https://github.com/jayflan/docs/blob/main/zoneTwo/backendGpx.ipynb'>Backend Logic</a>
   </li>
 </ul>
 
