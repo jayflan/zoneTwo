@@ -1,7 +1,7 @@
-const { FLOAT } = require('sequelize');
-const { INTEGER } = require('sequelize');
+// const { FLOAT } = require('sequelize');
+// const { INTEGER } = require('sequelize');
 const Sequelize = require('sequelize');
-const { STRING, JSON, UUID, UUIDV4 } = Sequelize;
+const { DATE, FLOAT, INTEGER, STRING, JSON, UUID, UUIDV4 } = Sequelize;
 const db = require('../db');
 
 const Workout = db.define('workout', {
@@ -18,6 +18,10 @@ const Workout = db.define('workout', {
   description: {
     type: STRING,
     allowNull: true
+  },
+  date: {
+    type: DATE,
+    allowNull: false
   },
   data: {
     type: JSON,
