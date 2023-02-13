@@ -6,7 +6,7 @@ Intention is to create a 'lite' Strava clone for personal workout tracking.
 
 Initial Goal: showcase heartrate, speed, and route metrics via upload of workout files.
 
-Current Documentation using Jupyter Notebook (links to docs in this repo):
+Current Documentation using Jupyter Notebook (links to docs for this repo):
 
 <ul>
   <li>
