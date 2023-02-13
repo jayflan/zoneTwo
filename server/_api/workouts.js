@@ -22,7 +22,10 @@ router.get("/:id", async(req, res, next) => {
     const userWorkouts = await Workout.findAll({
       where: {
         userId: user
-      }
+      },
+      order: [
+        ["date", "DESC"]
+      ],
     });
     res.json(userWorkouts);
 
