@@ -33,6 +33,10 @@ async function seed() {
   const xmlDataRd = fs.readFileSync('public/Morning_ride.gpx', 'utf-8');
   const gpxMtnWorkout = parseGpx(xmlDataMtn);
   const gpxRdWorkout = parseGpx(xmlDataRd);
+
+  //get workout dates
+  const dateMtnWorkout = gpxMtnWorkout.data[0]['time'];
+  const dateRdWorkout = gpxRdWorkout.data[0]['time'];
   
   //workout logicBackend instance creation
   const gpxMtnMeasurements = new Gpx(gpxMtnWorkout);
@@ -74,26 +78,26 @@ async function seed() {
 
   //Creating Workouts  
   const workouts = await Promise.all([
-    Workout.create({name: 'Workout #1', description: 'Best workout ever', 
-      data: {heartrate: 180, speed: 10}, userId: cody.id, distance: 0, elevation: 0, time: timeTemplateObj}),
+    Workout.create({name: 'Workout #1', description: 'Best workout ever',
+      data: {heartrate: 180, speed: 10}, userId: cody.id, distance: 0, elevation: 0, time: timeTemplateObj, date: '2022-10-22T13:39:41Z'}),
     Workout.create({name: 'Workout #2', description: 'Best workout ever', 
-      data: {heartrate: 150, speed: 15}, userId: murphy.id, distance: 0, elevation: 0, time: timeTemplateObj}),
-    Workout.create({name: gpxMtnWorkout.name, description: 'Best workout ever', 
+      data: {heartrate: 150, speed: 15}, userId: murphy.id, distance: 0, elevation: 0, time: timeTemplateObj, date: '2022-10-22T13:39:41Z'}),
+    Workout.create({name: gpxMtnWorkout.name, description: 'Best workout ever', date: dateMtnWorkout, 
       data: gpxMtnWorkout.data, userId: murphy.id, distance: mtnDistanceTotal, elevation: mtnElevation, 
         time: mtnTime, hrAvg: mtnHrAvg, hrMax: mtnHrMax, cadAvg: mtnCadAvg, cadMax: mtnCadMax, tempAvg: mtnTempAvg,
-        speedAvg: mtnSpeedAvg, speedMax: mtnSpeedMax}),
-    Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', 
+        speedAvg: mtnSpeedAvg, speedMax: mtnSpeedMax, date: dateMtnWorkout}),
+    Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', date: dateRdWorkout,
       data: gpxRdWorkout.data, userId: murphy.id, distance: roadDistanceTotal, elevation: roadElevation, 
         time: roadTime, hrAvg: roadHrAvg, hrMax: roadHrMax, cadAvg: roadCadAvg, cadMax: roadCadMax, tempAvg: roadTempAvg,
-        speedAvg: roadSpeedAvg, speedMax: roadSpeedMax}),
-    Workout.create({name: gpxMtnWorkout.name, description: 'Best workout ever', 
+        speedAvg: roadSpeedAvg, speedMax: roadSpeedMax, date: dateRdWorkout}),
+    Workout.create({name: gpxMtnWorkout.name, description: 'Best workout ever', date: dateMtnWorkout,
       data: gpxMtnWorkout.data, userId: cody.id, distance: mtnDistanceTotal, elevation: mtnElevation, 
         time: mtnTime, hrAvg: mtnHrAvg, hrMax: mtnHrMax, cadAvg: mtnCadAvg, cadMax: mtnCadMax, tempAvg: mtnTempAvg,
-        speedAvg: mtnSpeedAvg, speedMax: mtnSpeedMax}),
-    Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', 
+        speedAvg: mtnSpeedAvg, speedMax: mtnSpeedMax, date: dateMtnWorkout}),
+    Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', date: dateRdWorkout,
       data: gpxRdWorkout.data, userId: cody.id, distance: roadDistanceTotal, elevation: roadElevation, 
         time: roadTime, hrAvg: roadHrAvg, hrMax: roadHrMax, cadAvg: roadCadAvg, cadMax: roadCadMax, tempAvg: roadTempAvg,
-        speedAvg: roadSpeedAvg, speedMax: roadSpeedMax})
+        speedAvg: roadSpeedAvg, speedMax: roadSpeedMax, date: dateRdWorkout})
   ]);
 
 //Creating Bikes
