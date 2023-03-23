@@ -73,6 +73,23 @@ router.post("/upload/user/:id", async(req, res, next) => {
     const speedAvg = gpxMeasurements.speedAvg(speedArrKph);
     const speedMax = gpxMeasurements.speedMax(speedArrKph);
 
+        //append distance & speed trkpts to new gpx data array
+      const origParsedGpxArr = parsedGpx.data;
+      let distAccum = 0;
+      const newParsedGpxArr = origParsedGpxArr.map((currTrkPt, idx) => {
+        //Todo Need to make distance cummulative by trkpt!!!!!
+        //! distAccum will be in meters by default!!!!
+      const distanceArr = distance.distArr;
+      const currDist = distanceArr[idx];
+      distAccum += currDist.distance;
+      const currSpeed = speedArrKph[idx];
+      currTrkPt['distanceAccum'] = distAccum;
+      currTrkPt['speed'] = currSpeed;
+      return currTrkPt;
+      console.log(currTrkPt)
+    });
+    console.log(newParsedGpxArr);
+
       //post dataObjGpx to user's Workout db/model using gpxCalc methods
     const workout = await Workout.create({
       name: fileName,
