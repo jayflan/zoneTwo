@@ -1,6 +1,8 @@
 import React from "react";
 import * as d3 from "d3";
+import { event as currentEvent } from "d3";
 import { useD3 } from "../_hooks/useD3";
+import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 
 const AreaChart = () => {
   
@@ -31,83 +33,150 @@ const AreaChart = () => {
       const width = 700;
       const margin = { top: 20, right: 30, bottom: 30, left: 40 };
 
-      const x = d3
+
+      // Functions (Axis & mousemovement)
+
+      // function xScale() {
+      //   const xExtent = d3.extent(data, (d) => d.distance);
+      //   const xScale = d3.scaleTime()
+      //     .domain(xExtent)
+      //     .range([margin.left, width - margin.right]);
+      //   console.log(xExtent)
+      //   return xScale;
+      // }
+
+      const xScale = d3
         .scaleLinear()
         .domain([0, d3.max(data, (d) => d.distance)])  //Todo enter gpx data specifics here ex. d.miles!!!!!
         .rangeRound([margin.left, width - margin.right])
+      
+      // const yScale = () => {
+      //   const yMax = d3.max(data, (d) => d.speed);
+      //   const yMin = 0;
+      //   const yScale = d3.scaleLinear()
+      //     .domain([yMin, yMax])
+      //     .range([height - margin.bottom, margin.top]);
+        
+      //   return yScale;
+      // }
 
-      const y1 = d3
+      const yScale = d3
         .scaleLinear()
         .domain([0, d3.max(data, (d) => d.speed)]) //Todo enter gpx data specifics here ex. d.miles!!!!!
         .rangeRound([height - margin.bottom, margin.top])
+      ;
 
-      const xAxis = (g) => 
-        g.attr("transform", `translate(0, ${height - margin.bottom})`).call(
-          d3
-            .axisBottom(x)
-            .tickValues(
-              d3
-                .ticks(...d3.extent(x.domain()), width / 40)
-                .filter((v) => x(v) !== undefined)
-            )
-            .tickSizeOuter(0)
-        );
+        // if(typeof window !== "undefined") { window.d3 = d3}
 
-      const y1Axis = (g) => 
-        g
-          .attr("transform", `translate(${margin.left}, 0)`)
-          .style("color", "steelblue")
-          .call(d3.axisLeft(y1).ticks(null, "s"))
-          .call((g) => g.select(".domain").remove())
-          .call((g) => 
-            g
-              .append("text")
-              .attr("x", -margin.left)
-              .attr("y", 10)
-              .attr("fill", "currentColor")
-              .attr("text-anchor", "start")
-              .text(data.y1)
-          );      
+      const mouseMove = (event) => {
+        event.preventDefault();
+        const mouse = d3.pointer(event);
+        const [
+          xCoord,
+          yCoord,
+        ] = mouse;
+        
+        const mouseDistance =  xScale.invert(xCoord);
+        // const mouseDateSnap = d3.timeYear.floor(mouseDate);
+        
+        if (xScale(mouseDistance) < margin.left ||
+        xScale(mouseDistance) > width - margin.right) {
+          return;
+        }
+
+        const bisectDate = d3.bisector(d => d.distance).right;
+        const xIndex = bisectDate(data, mouseDistance, 1);
+        // const xIndex = bisectDate(data, mouseDateSnap, 1);
+          const mouseSpeed = data[xIndex].speed;
       
-      svg.select(".x-axis").call(xAxis);
-      svg.select(".y-axis").call(y1Axis);
+        svg.selectAll('.hoverLine')
+          .attr('x1', xScale(mouseDistance))
+          // .attr('x1', xScale(mouseDateSnap))
+          .attr('y1', margin.top)
+          .attr('x2', xScale(mouseDistance))
+          // .attr('x2', xScale(mouseDateSnap))
+          .attr('y2', height - margin.bottom)
+          .attr('stroke', '#147F90')
+          .attr('fill', '#A6E8F2')
+        ;
+      
+        svg.selectAll('.hoverPoint')
+          .attr('cx', xScale(mouseDistance))
+          // .attr('cx', xScale(mouseDateSnap))
+          .attr('cy', yScale(mouseSpeed))
+          .attr('r', '7')
+          .attr('fill', '#147F90')
+        ;
 
-      const curveFn = d3.area() // make area graph display
-        .x(function(d) { return x(d.distance) })
-        .y1(function(d) { return y1(d.speed) })
+        const isLessThanHalf = xIndex > data.length / 2;
+        const hoverTextX = isLessThanHalf ? '-0.75em' : '0.75em';
+        const hoverTextAnchor = isLessThanHalf ? 'end' : 'start';
+      
+        svg.selectAll('.hoverText')
+          .attr('x', xScale(mouseDistance))
+          // .attr('x', xScale(mouseDateSnap))
+          .attr('y', yScale(mouseSpeed))
+          .attr('dx', hoverTextX)
+          .attr('dy', '-1.25em')
+          .style('text-anchor', hoverTextAnchor)
+          .text(d3.format('.5s')(mouseSpeed));
+      };
+      
+      const area = d3.area()
+        .x(function(d) { return xScale(d.distance) })
+        .y1(function(d) { return yScale(d.speed) })
         .y0(220)
-        .curve(d3.curveCatmullRom.alpha(0))
+        // .curve(d3.curveCatmullRom.alpha(0))
+      ;
 
-      svg
-      .select(".plot-area")
-      // .datum(data)
-      .append("path")
-      .attr("stroke", "black")
-      .attr("d", curveFn(data))
-      .attr("fill", "steelblue")
-        // .selectAll(".area")
-        // .attr("class", "area")
-        // .data(data)
-        // .join("rect")
-        // .attr("x", (d) => x(d.distance))  //Todo enter gpx data specifics here ex. d.miles!!!!!
-        // .attr("width", x.bandwidth())
-        // .attr("y", (d) => y1(d.speed)) //Todo enter gpx data specifics here ex. d.miles!!!!!
-        // .attr("height", (d) => y1(0) - y1(d.speed))  //Todo enter gpx data specifics here ex. d.miles!!!!!
+      svg.append('path')
+        .attr('d', area(data))
+        .attr('stroke', '#147F90')
+        .attr('stroke-width', '2px')
+        .attr('fill', '#A6E8F2')
+      ;
+
+      // Axis
+
+      const xAxis = d3.axisBottom()
+        .scale(xScale);
+      const xAxisTranslate = height - margin.bottom;
+
+      svg.append('g')
+        .attr('transform', `translate(0, ${xAxisTranslate})`)
+        .call(xAxis)
+      ;
+
+      const yAxis = d3.axisLeft()
+        .tickFormat(d3.format('~s'))
+        .scale(yScale);
+
+      svg.append('g')
+        .attr('transform', `translate(${margin.left}, 0)`)
+        .call(yAxis)
+      ;
+      
+      // Interactivity
+  
+      svg.append('line').classed('hoverLine', true)
+      svg.append('circle').classed('hoverPoint', true);
+      svg.append("text").classed('hoverText', true);
+
+      svg.append('rect')
+        .attr('fill', 'transparent')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', width)
+        .attr('height', height)
+      ;
+
+      svg.on('mousemove', mouseMove);
+      
     },
     [data.length]
-  );
-
-  const chart = window.document.getElementById("chart") // make responsive SVG
-      // aspect = chart.width() / chart.height(),
-      // container = chart.parent();
-
-      // console.log(chart);
-
-      // $(window).on("resize", function() {
-      //   let targetWidth = container.width();
-      //   chart.attr("width", targetWidth);
-      //   chart.attr("height", Math.round(targetWidth / aspect));
-      // }).trigger("resize");
+  ); //end of ref
+      
+  
 
   return (
     <svg id="chart"
@@ -121,9 +190,10 @@ const AreaChart = () => {
         preserveAspectRatio: "xMinYMid"
       }}
     >
-      <g className="plot-area"/>
+      {/* <g className="plot-area"/>
+      <g className="mouse-area"/>
       <g className="x-axis"/>
-      <g className="y-axis"/>
+      <g className="y-axis"/> */}
     </svg>
   );
 } 
