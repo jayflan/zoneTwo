@@ -91,6 +91,12 @@ class Gpx {
       }, []);
   }
 
+  appendTrkPts(propStr, dataArr) {
+    return dataArr.map((currTrkPt) => {
+      currTrkPt[propStr] = currTrkPt
+    });
+  }
+
   speedAvg(speedArr) {
     let counterLength = 0;
     const speedSum = speedArr.reduce((accum, currElem) => {

@@ -2,35 +2,37 @@ import React from "react";
 import * as d3 from "d3";
 import { event as currentEvent } from "d3";
 import { useD3 } from "../_hooks/useD3";
-import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
+
 
 const AreaChart = () => {
-  
-  //temp data for testing new graph
-  const data = [
-    {distance: 0, speed: 0},
-    {distance: 1, speed: 6},
-    {distance: 2, speed: 6.5},
-    {distance: 3, speed: 6},
-    {distance: 4, speed: 7},
-    {distance: 5, speed: 8},
-    {distance: 6, speed: 9},
-    {distance: 7, speed: 6},
-    {distance: 8, speed: 6},
-    {distance: 9, speed: 5.5},
-    {distance: 10, speed: 4},
-    {distance: 11, speed: 3},
-    {distance: 12, speed: 2},
-    {distance: 13, speed: 1},
-    {distance: 14, speed: 0.5},
-    {distance: 15, speed: 0},
 
-  ]
+  const singleWorkout = useSelector((state) => state.singleWorkout) || [];
+  const gpxData = singleWorkout.data || [];
+  // const gpxData = [
+  //   {distance: 0, ele: "0"},
+  //   {distance: 1.25, ele: "6.25"},
+  //   {distance: 2, ele: 6.5},
+  //   {distance: 3, ele: 6},
+  //   {distance: 4, ele: 7},
+  //   {distance: 5, ele: 8},
+  //   {distance: 6.25, ele: "9.5"},
+  //   {distance: 7, ele: 6},
+  //   {distance: 8, ele: 6},
+  //   {distance: 9, ele: 5.5},
+  //   {distance: 10, ele: 4},
+  //   {distance: 11, ele: 3},
+  //   {distance: 12, ele: 2},
+  //   {distance: 13, ele: 1},
+  //   {distance: 14, ele: 0.5},
+  //   {distance: 15, ele: 0},
+  // ]
+
+  const height = 250;
+  const width = 900;
 
   const ref = useD3(
     (svg) => {
-      const height = 250;
-      const width = 700;
       const margin = { top: 20, right: 30, bottom: 30, left: 40 };
 
 
@@ -44,10 +46,12 @@ const AreaChart = () => {
       //   console.log(xExtent)
       //   return xScale;
       // }
+      
 
       const xScale = d3
         .scaleLinear()
-        .domain([0, d3.max(data, (d) => d.distance)])  //Todo enter gpx data specifics here ex. d.miles!!!!!
+        // .domain([0, d3.max(gpxData, (d) => d.distance)])  //Todo enter gpx data specifics here ex. d.miles!!!!!
+        .domain([0, d3.max(gpxData, (d) => d.distanceAccum)])  //Todo enter gpx data specifics here ex. d.miles!!!!!
         .rangeRound([margin.left, width - margin.right])
       
       // const yScale = () => {
@@ -62,11 +66,10 @@ const AreaChart = () => {
 
       const yScale = d3
         .scaleLinear()
-        .domain([0, d3.max(data, (d) => d.speed)]) //Todo enter gpx data specifics here ex. d.miles!!!!!
+        // .domain([0, d3.max(gpxData, (d) => d.speed)]) //Todo enter gpx data specifics here ex. d.miles!!!!!
+        .domain([0, d3.max(gpxData, (d) => parseFloat(d.ele))]) //Todo enter gpx data specifics here ex. d.miles!!!!!
         .rangeRound([height - margin.bottom, margin.top])
       ;
-
-        // if(typeof window !== "undefined") { window.d3 = d3}
 
       const mouseMove = (event) => {
         event.preventDefault();
@@ -84,10 +87,12 @@ const AreaChart = () => {
           return;
         }
 
-        const bisectDate = d3.bisector(d => d.distance).right;
-        const xIndex = bisectDate(data, mouseDistance, 1);
+        const bisectDate = d3.bisector(d => parseFloat(d.ele).right);
+        // const bisectDate = d3.bisector(d => d.distanceAccum).right;
+        const xIndex = bisectDate(gpxData, mouseDistance, 1);
         // const xIndex = bisectDate(data, mouseDateSnap, 1);
-          const mouseSpeed = data[xIndex].speed;
+          const mouseSpeed = gpxData[xIndex].speed;
+          // const mouseSpeed = gpxData[xIndex].ele;
       
         svg.selectAll('.hoverLine')
           .attr('x1', xScale(mouseDistance))
@@ -108,7 +113,7 @@ const AreaChart = () => {
           .attr('fill', '#147F90')
         ;
 
-        const isLessThanHalf = xIndex > data.length / 2;
+        const isLessThanHalf = xIndex > gpxData.length / 2;
         const hoverTextX = isLessThanHalf ? '-0.75em' : '0.75em';
         const hoverTextAnchor = isLessThanHalf ? 'end' : 'start';
       
@@ -123,14 +128,16 @@ const AreaChart = () => {
       };
       
       const area = d3.area()
-        .x(function(d) { return xScale(d.distance) })
-        .y1(function(d) { return yScale(d.speed) })
+        // .x(function(d) { return xScale(d.distance) })
+        .x(function(d) { return xScale(d.distanceAccum) })
+        // .y1(function(d) { return yScale(d.speed) })
+        .y1(function(d) { return yScale(parseFloat(d.ele)) })
         .y0(220)
-        // .curve(d3.curveCatmullRom.alpha(0))
+        .curve(d3.curveCatmullRom.alpha(0))
       ;
 
       svg.append('path')
-        .attr('d', area(data))
+        .attr('d', area(gpxData))
         .attr('stroke', '#147F90')
         .attr('stroke-width', '2px')
         .attr('fill', '#A6E8F2')
@@ -158,25 +165,47 @@ const AreaChart = () => {
       
       // Interactivity
   
-      svg.append('line').classed('hoverLine', true)
-      svg.append('circle').classed('hoverPoint', true);
-      svg.append("text").classed('hoverText', true);
+      // svg.append('line').classed('hoverLine', true)
+      // svg.append('circle').classed('hoverPoint', true);
+      // svg.append("text").classed('hoverText', true);
 
-      svg.append('rect')
-        .attr('fill', 'transparent')
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('width', width)
-        .attr('height', height)
-      ;
+      // svg.append('rect')
+      //   .attr('fill', 'transparent')
+      //   .attr('x', 0)
+      //   .attr('y', 0)
+      //   .attr('width', width)
+      //   .attr('height', height)
+      // ;
 
-      svg.on('mousemove', mouseMove);
+      // svg.on('mousemove', mouseMove);
       
     },
-    [data.length]
+    [gpxData.length]
   ); //end of ref
       
   
+
+  // return (
+  //   <svg id="chart"
+  //     ref={ref}
+  //     // viewBox={`0 0 ${height} ${width}`}
+  //     style={{
+  //       // border: "solid",
+  //       // borderColor: "blue",
+  //       height: 250,
+  //       width: "100%",
+  //       marginRight: "0px",
+  //       marginLeft: "0px",
+  //       // viewBox: "0 0 250 500",
+  //       preserveAspectRatio: "xMinYMid"
+  //     }}
+  //   >
+  //     <g className="plot-area"/>
+  //     <g className="mouse-area"/>
+  //     <g className="x-axis"/>
+  //     <g className="y-axis"/>
+  //   </svg>
+  // );
 
   return (
     <svg id="chart"
@@ -190,12 +219,19 @@ const AreaChart = () => {
         preserveAspectRatio: "xMinYMid"
       }}
     >
-      {/* <g className="plot-area"/>
+      <g className="plot-area"/>
       <g className="mouse-area"/>
       <g className="x-axis"/>
-      <g className="y-axis"/> */}
+      <g className="y-axis"/>
     </svg>
   );
 } 
+
+// write a d3.js function to create an area chart
+// https://observablehq.com/@d3/area-chart
+
+
+
+
 
 export default AreaChart;
