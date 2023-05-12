@@ -19,6 +19,22 @@
   border: solid blue;
 } */
 
+
+/* d3 chart styling */
+.x-grid line {
+  stroke: lightgray;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges;
+  pointer-events: none;
+}
+
+.y-grid line {
+  stroke: lightgray;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges;
+  pointer-events: none;
+}
+
 .main {
   height: 100%;
 }
