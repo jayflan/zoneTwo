@@ -198,7 +198,9 @@ class Gpx {
       const currRLat = currLat * DtoR, currRLon = currLon * DtoR;
       const prevRLat = prevLat * DtoR, prevRLon = prevLon * DtoR;  
       const dLat = currRLat - prevRLat, dLon = currRLon - prevRLon;
+      const currTime = currCoords.time, prevTime = data[prevIdx].time;
 
+      // haversine formula for distance
       const a = Math.pow(Math.sin(dLat/2),2) 
         + Math.cos(currRLat) 
         * Math.cos(prevRLat) 
@@ -207,12 +209,16 @@ class Gpx {
       //!Why is each d 'trkpt' NOT > 0, if in R meters?
         //!Answer - trkpts are in mi/km, need to 'un-dilute' them
       const d = R * c;
-      let dTrkPt = d; 
-      if(unit === 'kilometers') { // convert from radius to meters
-        dTrkPt = d * 1000
-      };
+      let dTrkPt = d;
 
-      distArr.push({'distance': dTrkPt, 'time': currCoords.time});
+      //rate of speed formula
+      const seconds = currTime - prevTime;
+      const speed = dTrkPt / seconds;
+      if(speed > 0) {
+        speed = Math.round(speed * 10) / 10;
+      };  
+
+      distArr.push({'distance': dTrkPt, 'time': currCoords.time, 'speed': speed});
       accum = accum + d;
       prevIdx = idx;
       return accum;
@@ -224,6 +230,17 @@ class Gpx {
     resultObj.distArr = distArr; 
     
     return resultObj;
+  }
+
+  distAccumArr = () => {
+    const distArr = this.distance().distArr;
+    let accumArr = [];
+    let accum = 0;
+    distArr.map((currObj) => {
+      accum = accum + currObj.distance;
+      accumArr.push(accum);
+    })
+    return accumArr;
   }
 
   elevation(unitMeasure = 'meter') {  // default elev unit is in meters
