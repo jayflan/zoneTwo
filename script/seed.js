@@ -75,15 +75,21 @@ async function seed() {
     'hours': 0
   };
   //create NEW gpxWorkout obj w/ appended data
-  //todo switch from gpxOutputDataMtn to a function that recreates array & accums distance over workout by trkpt, then append
   
-  const appendToGpxData = (origArr, dataArr) => {
+  const appendDistToGpxData = (origArr, dataArr) => {
     let accumElem = 0;
     const newArr = origArr.map((elem, idx) => {
-      accumElem += dataArr[idx].distance;
-      elem.distanceAccum = accumElem;
-      elem.distance = dataArr[idx].distance;
-      return elem;
+      if(!elem.distance) {
+        elem.distance = dataArr[idx].distance;
+        accumElem += dataArr[idx].distance;
+        elem.distanceAccum = accumElem;
+        return elem;
+      } else if(!elem.speed) {
+        elem.speed = dataArr[idx].speed;
+        return elem;
+      } else {
+        return elem;
+      };
     });
     return newArr;
   };
@@ -104,7 +110,7 @@ async function seed() {
     Workout.create({name: 'Workout #2', description: 'Best workout ever', 
       data: {heartrate: 150, speed: 15}, userId: murphy.id, distance: 0, elevation: 0, time: timeTemplateObj, date: '2022-10-22T13:39:41Z'}),
     Workout.create({name: gpxMtnWorkout.name, description: 'Best workout ever', date: dateMtnWorkout, 
-      data: appendToGpxData(gpxMtnWorkout.data, mtnDistance.distArr), userId: murphy.id, distance: mtnDistanceTotal, elevation: mtnElevation, 
+      data: appendDistToGpxData(gpxMtnWorkout.data, mtnDistance.distArr), userId: murphy.id, distance: mtnDistanceTotal, elevation: mtnElevation, 
       // data: gpxOutputDataMtn, userId: murphy.id, distance: mtnDistanceTotal, elevation: mtnElevation, 
         time: mtnTime, hrAvg: mtnHrAvg, hrMax: mtnHrMax, cadAvg: mtnCadAvg, cadMax: mtnCadMax, tempAvg: mtnTempAvg,
         speedAvg: mtnSpeedAvg, speedMax: mtnSpeedMax, date: dateMtnWorkout}),
@@ -113,7 +119,7 @@ async function seed() {
         time: roadTime, hrAvg: roadHrAvg, hrMax: roadHrMax, cadAvg: roadCadAvg, cadMax: roadCadMax, tempAvg: roadTempAvg,
         speedAvg: roadSpeedAvg, speedMax: roadSpeedMax, date: dateRdWorkout}),
     Workout.create({name: gpxMtnWorkout.name, description: 'Best workout ever', date: dateMtnWorkout,
-      data: appendToGpxData(gpxMtnWorkout.data, mtnDistance.distArr), userId: cody.id, distance: mtnDistanceTotal, elevation: mtnElevation, 
+      data: appendDistToGpxData(gpxMtnWorkout.data, mtnDistance.distArr), userId: cody.id, distance: mtnDistanceTotal, elevation: mtnElevation, 
       // data: gpxOutputDataMtn, userId: cody.id, distance: mtnDistanceTotal, elevation: mtnElevation, 
         time: mtnTime, hrAvg: mtnHrAvg, hrMax: mtnHrMax, cadAvg: mtnCadAvg, cadMax: mtnCadMax, tempAvg: mtnTempAvg,
         speedAvg: mtnSpeedAvg, speedMax: mtnSpeedMax, date: dateMtnWorkout}),
