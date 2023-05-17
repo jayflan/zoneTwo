@@ -124,17 +124,30 @@ const AreaChart = () => {
         ;
 
         const isLessThanHalf = xIndex > newGpxData.length / 2;
-        const hoverTextX = isLessThanHalf ? '-0.75em' : '0.75em';
+        const hoverTextX = isLessThanHalf ? '-0.5em' : '0.5em';
         const hoverTextAnchor = isLessThanHalf ? 'end' : 'start';
 
-        svg.selectAll('.hoverText')
+        svg.selectAll('.hoverTextDist')
         .attr('x', xScale(mouseDistance))
         .attr('y', yScale(mouseYAxis))
         .attr('dx', hoverTextX)
-        .attr('dy', '-1em')
+        .attr('font-size', '1em')
+        .attr('dy', '-0.5em')
         .attr('fill', '#147F90')
         .style('text-anchor', hoverTextAnchor)
         .text(`Dist: ${mouseDistance.toFixed(2)}`)
+        ;
+
+        svg.selectAll('.hoverTextElev')
+        .attr('x', xScale(mouseDistance))
+        .attr('y', yScale(mouseYAxis))
+        .attr('dx', hoverTextX)
+        .attr('font-size', '1em')
+        .attr('dy', '-1.5em')
+        .attr('fill', '#147F90')
+        // .style('text-anchor', 'bottom')
+        .style('text-anchor', hoverTextAnchor)
+        .text(`Elev: ${newGpxData[xIndex].ele.toFixed(2)}`)
         ;
 
       };
@@ -183,7 +196,8 @@ const AreaChart = () => {
       
       svg.append('line').classed('hoverLine', true)
       svg.append('circle').classed('hoverPoint', true);
-      svg.append("text").classed('hoverText', true);
+      svg.append("text").classed('hoverTextDist', true);
+      svg.append("text").classed('hoverTextElev', true);
 
       svg.append('rect')
         .attr('fill', 'transparent')
@@ -200,7 +214,10 @@ const AreaChart = () => {
         .attr('stroke', 'transparent')
         .attr('fill', 'transparent')
         ;
-        svg.selectAll('.hoverText')
+        svg.selectAll('.hoverTextDist')
+        .attr('fill', 'transparent')
+        ;
+        svg.selectAll('.hoverTextElev')
         .attr('fill', 'transparent')
         ;
         svg.selectAll('.hoverPoint')
