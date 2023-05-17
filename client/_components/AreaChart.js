@@ -2,8 +2,6 @@ import React from "react";
 import * as d3 from "d3";
 import { useD3 } from "../_hooks/useD3";
 import { useSelector } from "react-redux";
-// import { displayFeetOrMeters, displayMilesOrKilos, displayFahrenheit } from "../_functions/logicFrontend";
-
 
 const AreaChart = () => {
 
@@ -14,7 +12,6 @@ const AreaChart = () => {
 
   const height = 250;
   const width = 900;
-
 
   //create new gpxData based on user units of measurement (empirical or metric)
   const updateGpxData = (originalGpxData) => { 
@@ -43,6 +40,7 @@ const AreaChart = () => {
   };
 
   const newGpxData = updateGpxData(gpxData);
+  // console.log("newGpxData", newGpxData);
 
   const ref = useD3(
     (svg) => {
@@ -127,27 +125,60 @@ const AreaChart = () => {
         const hoverTextX = isLessThanHalf ? '-0.5em' : '0.5em';
         const hoverTextAnchor = isLessThanHalf ? 'end' : 'start';
 
+        const displayMiorKm = (userUnitDist) => {
+           return userUnitDist  === "miles" ? "mi" : "km"; 
+        };
+
+        const displayFtorMtr = (userUnitDist) => {
+          return userUnitDist  === "miles" ? "ft" : "m"; 
+       };
+
+        const date = new Date(newGpxData[xIndex].time);
+        const formattedTime =  date.toLocaleString('en-US', 
+          { hour: 'numeric', minute: 'numeric', hour12: true }
+        );
+        svg.selectAll('.hoverTextTime')
+        .attr('x', xScale(mouseDistance))
+        .attr('y', yScale(mouseYAxis))
+        .attr('dx', hoverTextX)
+        .attr('font-size', '0.8em')
+        .attr('dy', '-4.5em')
+        .attr('fill', '#147F90')
+        .style('text-anchor', hoverTextAnchor)
+        .text(`${formattedTime}`)
+        ;
+        
         svg.selectAll('.hoverTextDist')
         .attr('x', xScale(mouseDistance))
         .attr('y', yScale(mouseYAxis))
         .attr('dx', hoverTextX)
-        .attr('font-size', '1em')
-        .attr('dy', '-0.5em')
+        .attr('font-size', '0.9em')
+        .attr('dy', '-2.5em')
         .attr('fill', '#147F90')
         .style('text-anchor', hoverTextAnchor)
-        .text(`Dist: ${mouseDistance.toFixed(2)}`)
+        .text(`Dist: ${mouseDistance.toFixed(2)} ${displayMiorKm(userUnitDist)}`)
         ;
 
         svg.selectAll('.hoverTextElev')
         .attr('x', xScale(mouseDistance))
         .attr('y', yScale(mouseYAxis))
         .attr('dx', hoverTextX)
-        .attr('font-size', '1em')
+        .attr('font-size', '0.9em')
         .attr('dy', '-1.5em')
         .attr('fill', '#147F90')
-        // .style('text-anchor', 'bottom')
         .style('text-anchor', hoverTextAnchor)
-        .text(`Elev: ${newGpxData[xIndex].ele.toFixed(2)}`)
+        .text(`Elev: ${newGpxData[xIndex].ele.toFixed(2)} ${displayFtorMtr(userUnitDist)}`)
+        ;
+
+        svg.selectAll('.hoverTextGrade')
+        .attr('x', xScale(mouseDistance))
+        .attr('y', yScale(mouseYAxis))
+        .attr('dx', hoverTextX)
+        .attr('font-size', '0.9em')
+        .attr('dy', '-0.5em')
+        .attr('fill', '#147F90')
+        .style('text-anchor', hoverTextAnchor)
+        .text(`Grade(Beta): ${newGpxData[xIndex].grade.toFixed(1)}`)
         ;
 
       };
@@ -196,8 +227,11 @@ const AreaChart = () => {
       
       svg.append('line').classed('hoverLine', true)
       svg.append('circle').classed('hoverPoint', true);
+      svg.append("text").classed('hoverTextTime', true);
+      svg.append("text").classed('hoverTextDist', true);
       svg.append("text").classed('hoverTextDist', true);
       svg.append("text").classed('hoverTextElev', true);
+      svg.append("text").classed('hoverTextGrade', true);
 
       svg.append('rect')
         .attr('fill', 'transparent')
@@ -214,10 +248,16 @@ const AreaChart = () => {
         .attr('stroke', 'transparent')
         .attr('fill', 'transparent')
         ;
+        svg.selectAll('.hoverTextTime')
+        .attr('fill', 'transparent')
+        ;
         svg.selectAll('.hoverTextDist')
         .attr('fill', 'transparent')
         ;
         svg.selectAll('.hoverTextElev')
+        .attr('fill', 'transparent')
+        ;
+        svg.selectAll('.hoverTextGrade')
         .attr('fill', 'transparent')
         ;
         svg.selectAll('.hoverPoint')
