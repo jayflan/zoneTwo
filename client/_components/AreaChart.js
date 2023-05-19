@@ -2,6 +2,7 @@ import React from "react";
 import * as d3 from "d3";
 import { useD3 } from "../_hooks/useD3";
 import { useSelector } from "react-redux";
+import { background } from "@chakra-ui/react";
 
 const AreaChart = () => {
 
@@ -40,12 +41,11 @@ const AreaChart = () => {
   };
 
   const newGpxData = updateGpxData(gpxData);
-  // console.log("newGpxData", newGpxData);
 
   const ref = useD3(
     (svg) => {
 
-      const margin = { top: 20, right: 30, bottom: 30, left: 40 };
+      const margin = { top: 20, right: width / 50, bottom: 30, left: width /  5};
       const innerWidth = width - margin.left - margin.right;
       const innerHeight = height - margin.top - margin.bottom;
       
@@ -202,8 +202,73 @@ const AreaChart = () => {
       .attr('transform', `translate(${margin.left}, 0)`)
       .call(yAxis)
       ;
+
+
+      // create a group of y axis labels that display a title for elevation with the current mouse pointer data below the title
+      const yAxisTitle = svg.append('g')
+      .attr('class', 'y-axis-title')
+      .attr('transform', `translate(${margin.left},${margin.top})`)
+      ;
       
-      
+      yAxisTitle.append('text')
+      .attr('class', 'y-axis-title-text')
+      .attr('text-anchor', 'middle')
+      .attr('x', -margin.left / 2)
+      .attr('y', 100)
+      .attr('font-size', '1em')
+      .style('fill', '#147F90')
+      .text('Elevation')
+      ;
+
+      const getMaxValueArrayIndex = (array, objProp) => {
+        let maxValue = 0;
+        let maxIndex = 0;
+        array.forEach((d, i) => {
+          if (d[objProp] > maxValue) {
+            maxValue = d[objProp];
+            maxIndex = i;
+          }
+        });
+        return maxIndex;
+      };
+
+      const getMinValueArrayIndex = (array, objProp) => {
+        let minValue = array[0][objProp];
+        let minIndex = 0;
+        array.forEach((d, i) => {
+          if (d[objProp] < minValue) {
+            minValue = d[objProp];
+            minIndex = i;
+          }
+        });
+        return minIndex;
+      };
+
+      yAxisTitle.append('text')
+      .attr('class', 'y-axis-max-text')
+      .attr('text-anchor', 'middle')
+      .attr('x', -margin.left / 2)
+      .attr('y', 100)
+      .attr('font-size', '0.8em')
+      .attr('dy', '1.5em')
+      .style('fill', '#147F90')
+        //display max y-axis value
+      .text(`${newGpxData.length > 0 ? `Max ${newGpxData[getMaxValueArrayIndex(newGpxData, 'ele')].ele.toFixed(0)}` : ""}`)
+      ;
+
+      yAxisTitle.append('text')
+      .attr('class', 'y-axis-max-text')
+      .attr('text-anchor', 'middle')
+      .attr('x', -margin.left / 2)
+      .attr('y', 100)
+      .attr('font-size', '0.8em')
+      .attr('dy', '2.8em')
+      .style('fill', '#147F90')
+        //display min y-axis value
+      .text(`${newGpxData.length > 0 ? `Min ${newGpxData[getMinValueArrayIndex(newGpxData, 'ele')].ele.toFixed(0)}` : ""}`)
+      ;
+
+
       // create x and y gridlines
       const xAxisGrid = d3.axisBottom(xScale)
       .tickSize(innerHeight)
