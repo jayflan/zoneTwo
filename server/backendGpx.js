@@ -80,8 +80,8 @@ class Gpx {
         const elapsedMinutes = elapsedSeconds / 60;
         const elapsedHrs = elapsedMinutes / 60;
         
-        const distanceMeters = currTrkPt.distance;
-        const speedKph = ((distanceMeters / 1000) / (elapsedHrs)); // in kilometers per hour
+        const distanceKm = currTrkPt.distance;
+        const speedKph = (distanceKm / (elapsedHrs)); // in kilometers per hour
         const speedMph = speedKph / 1.60934;
         
         if(distUnit === 'miles') {
@@ -211,14 +211,7 @@ class Gpx {
       const d = R * c;
       let dTrkPt = d;
 
-      //rate of speed formula
-      const seconds = currTime - prevTime;
-      const speed = dTrkPt / seconds;
-      if(speed > 0) {
-        speed = Math.round(speed * 10) / 10;
-      };  
-
-      distArr.push({'distance': dTrkPt, 'time': currCoords.time, 'speed': speed});
+      distArr.push({'distance': dTrkPt, 'time': currCoords.time});
       accum = accum + d;
       prevIdx = idx;
       return accum;

@@ -42,7 +42,6 @@ async function seed() {
   const gpxRdMeasurements = new Gpx(gpxRdWorkout);
   const roadTempAvg = gpxRdMeasurements.tempAvg();
   const roadDistance = gpxRdMeasurements.distance();
-  // console.log(roadDistance);
   const roadDistanceTotal = roadDistance.totalDist;
   const roadElevation = gpxRdMeasurements.elevation();
   const roadTime = gpxRdMeasurements.time();
@@ -78,24 +77,6 @@ async function seed() {
   //create NEW gpxWorkout array of objs w/ appended data via special functions
   let gpxOutputDataMtn = JSON.parse(JSON.stringify(gpxMtnWorkout.data));
   
-  //append distance to each gpxdata array obj
-  // const appendDistToGpxData = (origArr, dataArr) => {
-  //   let accumElem = 0;
-  //   const newArr = origArr.map((elem, idx) => {
-  //     if(!elem.distance) {
-  //       elem.distance = dataArr[idx].distance;
-  //       accumElem += dataArr[idx].distance;
-  //       elem.distanceAccum = accumElem;
-  //       return elem;
-  //     } else if(!elem.speed) {
-  //       elem.speed = dataArr[idx].speed;
-  //       return elem;
-  //     } else {
-  //       return elem;
-  //     };
-  //   });
-  //   return newArr;
-  // }
 
   const appendDistCalcs = (origArr, dataArr) => {
     let accumElem = 0;
@@ -104,13 +85,11 @@ async function seed() {
         elem.distance = dataArr[idx].distance;
         accumElem += dataArr[idx].distance;
         elem.distanceAccum = accumElem;
-        return elem;
-      } else if(!elem.speed) {
+      }; 
+      if(!elem.speed) {
         elem.speed = dataArr[idx].speed;
-        return elem;
-      } else {
-        return elem;
       };
+      return elem;
     });
     return newArr;
   };
@@ -134,10 +113,21 @@ async function seed() {
     return newArr;
   };
 
+
+  const appendSpeedCalcs = (origArr, dataArr) => {
+    const newArr = origArr.map((elem, idx) => {
+      if(!elem.speed) {
+        elem.speed = dataArr[idx];
+      }; 
+      return elem;
+    });
+    return newArr;
+  };
+
   gpxOutputDataMtn = appendDistCalcs(gpxOutputDataMtn, mtnDistance.distArr);
+  gpxOutputDataMtn = appendSpeedCalcs(gpxOutputDataMtn, mtnSpeedArrKph);
   gpxOutputDataMtn = appendElevGrade(gpxOutputDataMtn);
 
-// console.log(gpxOutputDataMtn);
 
   //Creating Workouts  
   const workouts = await Promise.all([

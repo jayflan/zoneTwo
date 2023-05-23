@@ -1,14 +1,16 @@
 import React from "react";
 import * as d3 from "d3";
 import { useD3 } from "../_hooks/useD3";
-import { useSelector } from "react-redux";
-import { background } from "@chakra-ui/react";
 
-const AreaChart = () => {
+const AreaChart = (props) => {
 
-  const userInfo = useSelector((state) => state.auth) || [];
+  const {
+    userInfo,
+    singleWorkout,
+    targetProp,
+   } = props;
+
   const userUnitDist =  userInfo.distUnit || []; // miles or kilometers
-  const singleWorkout = useSelector((state) => state.singleWorkout) || [];
   const gpxData = singleWorkout.data || [];
 
   const height = 250;
@@ -57,14 +59,14 @@ const AreaChart = () => {
       
       const yScale = d3
       .scaleLinear()
-      .domain([0, d3.max(newGpxData, (d) => parseFloat(d.ele) + 100)])
+      .domain([0, d3.max(newGpxData, (d) => parseFloat(d[targetProp]) + 100)])
       .range([height - margin.bottom, margin.top])
       ;
 
       // create graph/area data
       const area = d3.area()
       .x(function(d) { return xScale(d.distanceAccum) })
-      .y1(function(d) { return yScale(parseFloat(d.ele)) })
+      .y1(function(d) { return yScale(parseFloat(d[targetProp])) })
       .y0(height - margin.bottom)
       .curve(d3.curveCatmullRom.alpha(0))
       ;
@@ -115,7 +117,7 @@ const AreaChart = () => {
         
         svg.selectAll('.hoverPoint')
         .attr('cx', xScale(mouseDistance))
-        .attr('cy', yScale(newGpxData[xIndex].ele))
+        .attr('cy', yScale(newGpxData[xIndex][targetProp]))
         .attr('r', 3)
         .attr('fill', '#147F90')
         .attr('stroke', '#147F90')
@@ -167,7 +169,7 @@ const AreaChart = () => {
         .attr('dy', '-1.5em')
         .attr('fill', '#147F90')
         .style('text-anchor', hoverTextAnchor)
-        .text(`Elev: ${newGpxData[xIndex].ele.toFixed(2)} ${displayFtorMtr(userUnitDist)}`)
+        .text(`Elev: ${newGpxData[xIndex][targetProp].toFixed(2)} ${displayFtorMtr(userUnitDist)}`)
         ;
 
         svg.selectAll('.hoverTextGrade')
@@ -253,7 +255,9 @@ const AreaChart = () => {
       .attr('dy', '1.5em')
       .style('fill', '#147F90')
         //display max y-axis value
-      .text(`${newGpxData.length > 0 ? `Max ${newGpxData[getMaxValueArrayIndex(newGpxData, 'ele')].ele.toFixed(0)}` : ""}`)
+      .text(`${newGpxData.length > 0 
+        ? `Max ${newGpxData[getMaxValueArrayIndex(newGpxData, `${targetProp}`)][targetProp].toFixed(0)}` 
+        : ""}`)
       ;
 
       yAxisTitle.append('text')
@@ -265,7 +269,9 @@ const AreaChart = () => {
       .attr('dy', '2.8em')
       .style('fill', '#147F90')
         //display min y-axis value
-      .text(`${newGpxData.length > 0 ? `Min ${newGpxData[getMinValueArrayIndex(newGpxData, 'ele')].ele.toFixed(0)}` : ""}`)
+      .text(`${newGpxData.length > 0 
+        ? `Min ${newGpxData[getMinValueArrayIndex(newGpxData, `${targetProp}`)][targetProp].toFixed(0)}` 
+        : ""}`)
       ;
 
 
@@ -294,7 +300,7 @@ const AreaChart = () => {
       svg.append('circle').classed('hoverPoint', true);
       svg.append("text").classed('hoverTextTime', true);
       svg.append("text").classed('hoverTextDist', true);
-      svg.append("text").classed('hoverTextDist', true);
+      // svg.append("text").classed('hoverTextDist', true);
       svg.append("text").classed('hoverTextElev', true);
       svg.append("text").classed('hoverTextGrade', true);
 
