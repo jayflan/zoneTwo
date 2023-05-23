@@ -14,9 +14,9 @@ import { getUserWorkouts } from "../_store/workouts";
 import { useHistory, useParams } from "react-router-dom";
 import { DateTime, displayFeetOrMeters, displayMilesOrKilos } from "../_functions/logicFrontend";
 import Map from "../_components/Map";
-import GraphOverview from "./GraphOverview";
-import AreaChart from "./AreaChart";
-import BarChart from "./BarChart";
+import AreaChartHR  from "./AreaChartHR";
+import AreaChartElev from "./AreaChartElev";
+import AreaChartSpeed from "./AreaChartSpeed";
 
 const UserWorkout = (props) => {
 
@@ -140,7 +140,9 @@ const UserWorkout = (props) => {
               }
             </Box>
             <Box border="1px" borderColor="gray.200">
-              <AreaChart data={ userWorkouts }/>
+              <AreaChartElev userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "ele" }/>
+              <AreaChartHR userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "hr" }/>
+              <AreaChartSpeed userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "speed" }/>
             </Box>
           </Box>
         </Flex>
