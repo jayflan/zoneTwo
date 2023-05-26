@@ -2,7 +2,7 @@ import {
   Box, Button, Center, Container, Flex, ListItem, Text, UnorderedList,
 } from "@chakra-ui/react";
 import PrimaryButton from "./styles/PrimaryButton"
-import React, {useEffect} from "react";
+import React, { useEffect} from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Footer from "./Footer";
@@ -14,9 +14,7 @@ import { getUserWorkouts } from "../_store/workouts";
 import { useHistory, useParams } from "react-router-dom";
 import { DateTime, displayFeetOrMeters, displayMilesOrKilos } from "../_functions/logicFrontend";
 import Map from "../_components/Map";
-import AreaChartHR  from "./AreaChartHR";
 import AreaChartElev from "./AreaChartElev";
-import AreaChartSpeed from "./AreaChartSpeed";
 
 const UserWorkout = (props) => {
 
@@ -47,24 +45,51 @@ const UserWorkout = (props) => {
   const dateTime = new DateTime(startTime);
   const workoutTimeStamp = `${dateTime.monthName()} ${dateTime.dateNum()}, ${dateTime.dateFullYear()} at ${dateTime.dateTime()}`;
 
-  
-
   //<------------------------------ componentDidMount ------------------------------>//
   //<------------------------------ event & error handling ------------------------------>//
+
+  // change Overview/Analysis color when hovered over
+  // const handleBtnOverview  = (e) => {
+  //   e.preventDefault();
+  //   document.querySelector(".btn-useroverview").style = {
+  //     borderLeftColor: "orange",
+  //     borderLeft: "4px",
+  //   };
+  //   console.log('Show Overview');
+  // };
+
+  // const handleBtnAnalysis  = (e) => {
+  //   e.preventDefault();
+  //   overviewBtn ? setOverviewBtn(false) : "";
+  //   document.querySelector(".btn-useranalysis").style = {
+  //     borderLeftColor: "orange",
+  //     borderLeft: "4px",
+  //   };
+  //   console.log('Show Overview');
+  // };
+
+  // console.log(overviewBtn);
 
   return(
     <div>
       <Flex direction="column" justifyContent="space-between" h="100vh">
         <Flex pt={28}>
           {/* Navbar/Buttons */}
-          <Box as="nav" ml={6} mr={6}>
-            <Flex p="4" border="1px" borderBottom="0px" borderColor="gray.200">
-              <Text>Overview</Text>
-              <Box width="10"></Box>
-            </Flex>
-            <Box>
-              <Text p="4" border="1px" borderColor="gray.200">Analysis</Text>
-            </Box>
+          <Box className="nav-userworkout" ml={6} mr={6}>
+            <Link to={`/workouts/user/${singleWorkout.id}`}>
+              <Flex as="button" className="btn-useroverview" p="4" border="1px" borderBottom="0px" borderColor="gray.200"
+                borderLeft="4px" borderLeftColor="orange"
+              >
+                <Text>Overview</Text>
+                <Box width="10"></Box>
+              </Flex>
+            </Link>
+            <Link to={`/workouts/user/${singleWorkout.id}/analysis`}>
+              <Flex as="button" className="btn-useranalysis" p="4" border="1px" borderColor="gray.200">
+                <Text>Analysis</Text>
+                <Box width="12"></Box>
+              </Flex>
+            </Link>
           </Box>
           {/* Overview, Map, Graphs */}
           <Box flexGrow="1" mr={6}>
@@ -141,8 +166,6 @@ const UserWorkout = (props) => {
             </Box>
             <Box border="1px" borderColor="gray.200">
               <AreaChartElev userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "ele" }/>
-              <AreaChartHR userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "hr" }/>
-              <AreaChartSpeed userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "speed" }/>
             </Box>
           </Box>
         </Flex>
