@@ -19,6 +19,14 @@
   border: solid blue;
 } */
 
+/* userWorkout styling */
+.btn-useroverview:hover {
+  background-color: #F7FAFC;
+}
+
+.btn-useranalysis:hover {
+  background-color: #F7FAFC;
+}
 
 /* d3 chart styling */
 .x-grid line {
