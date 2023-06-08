@@ -5,7 +5,6 @@ import Dashboard from "./_components/Dashboard";
 import Landing from "./_components/Landing";
 import LogIn from "./_components/LogIn";
 import SignUp from "./_components/SignUp";
-import UserWorkout from "./_components/UserWorkout";
 import UserWorkoutOverview from "./_components/UserWorkoutOverview";
 import UserWorkoutAnalysis from "./_components/UserWorkoutAnalysis";
 import PageNotFound from "./_components/PageNotFound";
