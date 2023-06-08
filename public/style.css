@@ -28,6 +28,37 @@
   background-color: #F7FAFC;
 }
 
+.btn-useroverview.btn-active {
+  position: relative;
+}
+
+.btn-useroverview.btn-active::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -3px;
+  bottom: -1px;
+  left: -3px;
+  border-left: 4px solid orange;
+  /* z-index: -1; */
+}
+
+.btn-useranalysis.btn-active {
+  position: relative;
+}
+
+.btn-useranalysis.btn-active::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -3px;
+  bottom: -1px;
+  left: -3px;
+  border-left: 4px solid orange;
+  /* z-index: -1; */
+}
+
+
 /* d3 chart styling */
 .x-grid line {
   stroke: lightgray;

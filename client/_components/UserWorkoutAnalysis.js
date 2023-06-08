@@ -1,25 +1,24 @@
 import { 
-  Box, Button, Center, Container, Flex, ListItem, Text, UnorderedList,
+  Box, Button, Container, Flex, ListItem, Text, UnorderedList,
 } from "@chakra-ui/react";
 import PrimaryButton from "./styles/PrimaryButton"
 import React, { useEffect} from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import PageNav from "./PageNav";
 import Footer from "./Footer";
 import Newscard from "./dashboardCards/NewsCard";
 import WorkoutTable from "./WorkoutTable";
 import { useDispatch } from "react-redux";
 import { getSingleWorkout } from "../_store/singleWorkout";
 import { getUserWorkouts } from "../_store/workouts";
-import { useHistory, useParams } from "react-router-dom";
-import { DateTime, displayFeetOrMeters, displayMilesOrKilos } from "../_functions/logicFrontend";
+import { useParams } from "react-router-dom";
 import Map from "./Map";
-import AreaChartHR  from "./AreaChartHR";
 import AreaChartElev from "./AreaChartElev";
+import AreaChartHR from "./AreaChartHR";
 import AreaChartSpeed from "./AreaChartSpeed";
 
-const UserWorkout = (props) => {
-
+const UserWorkoutOverview = (props) => {
 
   //<------------------------------ hooks ------------------------------>//
   const dispatch = useDispatch();
@@ -38,60 +37,24 @@ const UserWorkout = (props) => {
     }
   },[urlWorkoutId.id]);
 
-  const userDistUnit = user?.distUnit;
+  // const userDistUnit = user?.distUnit;
   
   let startTime = ""; // timestamp creation
   let firstTrkPt = singleWorkout?.data;
   firstTrkPt ? firstTrkPt = firstTrkPt[0] : "";
   firstTrkPt ? startTime = firstTrkPt.time : "";
-  const dateTime = new DateTime(startTime);
-  const workoutTimeStamp = `${dateTime.monthName()} ${dateTime.dateNum()}, ${dateTime.dateFullYear()} at ${dateTime.dateTime()}`;
+  // const dateTime = new DateTime(startTime);
+  // const workoutTimeStamp = `${dateTime.monthName()} ${dateTime.dateNum()}, ${dateTime.dateFullYear()} at ${dateTime.dateTime()}`;
 
   //<------------------------------ componentDidMount ------------------------------>//
   //<------------------------------ event & error handling ------------------------------>//
-
-  // change Overview/Analysis color when hovered over
-  // const handleBtnOverview  = (e) => {
-  //   e.preventDefault();
-  //   document.querySelector(".btn-useroverview").style = {
-  //     borderLeftColor: "orange",
-  //     borderLeft: "4px",
-  //   };
-  //   console.log('Show Overview');
-  // };
-
-  // const handleBtnAnalysis  = (e) => {
-  //   e.preventDefault();
-  //   overviewBtn ? setOverviewBtn(false) : "";
-  //   document.querySelector(".btn-useranalysis").style = {
-  //     borderLeftColor: "orange",
-  //     borderLeft: "4px",
-  //   };
-  //   console.log('Show Overview');
-  // };
-
-  // console.log(overviewBtn);
 
   return(
     <div>
       <Flex direction="column" justifyContent="space-between" h="100vh">
         <Flex pt={28}>
           {/* Navbar/Buttons */}
-          <Box className="nav-userworkout" ml={6} mr={6}>
-            <Link to={`/workouts/user/${singleWorkout.id}`}>
-              <Flex as="button" className="btn-useroverview" p="4" border="1px" borderBottom="0px" borderColor="gray.200">
-                <Text>Overview</Text>
-              <Box width="10"></Box>
-              </Flex>
-            </Link>
-            <Link to={`/workouts/user/${singleWorkout.id}/analysis`}>
-              <Flex as="button" className="btn-useranalysis" p="4" border="1px" borderColor="gray.200"
-                borderLeft="4px" borderLeftColor="orange">
-                <Text>Analysis</Text>
-                <Box width="12"></Box>
-              </Flex>
-            </Link>
-          </Box>
+          <PageNav />
           {/* Overview, Map, Graphs */}
           <Box flexGrow="1" mr={6}>
             <Box border="1px" borderBottom="1px" borderColor="gray.200" bg="gray.50">
@@ -138,4 +101,4 @@ const UserWorkout = (props) => {
   )
 }
 
-export default UserWorkout;
+export default UserWorkoutOverview;

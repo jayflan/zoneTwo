@@ -5,7 +5,7 @@ import Dashboard from "./_components/Dashboard";
 import Landing from "./_components/Landing";
 import LogIn from "./_components/LogIn";
 import SignUp from "./_components/SignUp";
-import UserWorkout from "./_components/UserWorkout";
+import UserWorkoutOverview from "./_components/UserWorkoutOverview";
 import UserWorkoutAnalysis from "./_components/UserWorkoutAnalysis";
 import PageNotFound from "./_components/PageNotFound";
 
@@ -48,7 +48,7 @@ const NoShowRoute = ({ children }) => {
   return(
     <div>
       <Routes>
-        <Route exact path="workouts/user/:id" element={<ShowProtectedRoute><UserWorkout/></ShowProtectedRoute>}/>
+        <Route exact path="workouts/user/:id" element={<ShowProtectedRoute><UserWorkoutOverview/></ShowProtectedRoute>}/>
         <Route exact path="workouts/user/:id/analysis" element={<ShowProtectedRoute><UserWorkoutAnalysis/></ShowProtectedRoute>}/>
         <Route exact path="dashboard" element={<ShowProtectedRoute><Dashboard/></ShowProtectedRoute>}/>
         <Route exact path="/" element={<NoShowRoute><Landing/></NoShowRoute>}/>
