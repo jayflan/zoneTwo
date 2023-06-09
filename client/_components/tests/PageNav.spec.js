@@ -80,7 +80,7 @@ describe('PageNav', () => {
     //   // expect(history.location.pathname).to.equal(`/workouts/user/workout-id/analysis`);
     // });
     await waitForClassNameChange(analysisBtn, 'btn-analysis', 2000);
-    screen.debug();
+    // screen.debug();
     expect(overviewBtn.classList.contains('btn-active')).to.be.false;
     expect(analysisBtn.classList.contains('btn-active')).to.be.true;
   
