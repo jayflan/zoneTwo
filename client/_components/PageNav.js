@@ -13,7 +13,7 @@ const PageNav = (props) => {
   
   const singleWorkout = useSelector((state) => state.singleWorkout) || [];
   
-  const [activeBtn, setActiveBtn] = useState('Overview');
+  const [activeBtn, setActiveBtn] = useState('');
 
   useEffect(() => {
     if(location.pathname === `/workouts/user/${singleWorkout.id}/analysis`){
@@ -27,16 +27,24 @@ const PageNav = (props) => {
     }
   });
 
-  //<------------------------------ componentDidMount ------------------------------>//
+
+  //<------------------------------ evaluations ------------------------------>//
+
+    // verify workout trackpoints for analysis button display
+  let startTime = ""; // timestamp creation
+  let firstTrkPt = singleWorkout?.data;
+  firstTrkPt ? firstTrkPt = firstTrkPt[0] : "";
+  firstTrkPt ? startTime = firstTrkPt.time : "";
+
   //<------------------------------ event & error handling ------------------------------>//
 
   const handleClick = (e) => {
     e.preventDefault();
     if(e.target.innerText === 'Overview'){
-      // setActiveBtn('Overview');
+      setActiveBtn('Overview');
       navigate(`/workouts/user/${singleWorkout.id}`);
     } else if(e.target.innerText === 'Analysis'){
-      // setActiveBtn('Analysis');
+      setActiveBtn('Analysis');
       navigate(`/workouts/user/${singleWorkout.id}/analysis`);
     }; 
   };
@@ -53,23 +61,28 @@ const PageNav = (props) => {
                 id="overview"
                 data-testid="overview-btn"
                 className={`btn-useroverview ${activeBtn === 'Overview' ? 'btn-active' : ''}`} 
-                p="4" border="1px" borderBottom="0px" borderColor="gray.200"
+                p="4" border="1px" borderBottom="1px" borderColor="gray.200"
                 onClick={handleClick}
               >
                 <Text pr="1em">Overview</Text>
               </Flex>
             </Link>
-            <Link to={`/workouts/user/${singleWorkout.id}/analysis`} >
-              <Flex as="button"
-                id="analysis"
-                data-testid="analysis-btn"
-                className={`btn-useranalysis ${activeBtn === 'Analysis' ? 'btn-active' : ''}`}
-                p="4" border="1px" borderColor="gray.200"
-                onClick={handleClick}
-              >
-                <Text pr="1.5em">Analysis</Text>
-              </Flex>
-            </Link>
+            {/* Display Analysis button only if latitude trackpoints exist */}
+            {
+              firstTrkPt?.lat ? (
+                <Link to={`/workouts/user/${singleWorkout.id}/analysis`} >
+                  <Flex as="button"
+                    id="analysis"
+                    data-testid="analysis-btn"
+                    className={`btn-useranalysis ${activeBtn === 'Analysis' ? 'btn-active' : ''}`}
+                    p="4" border="1px" borderTop="0px" borderColor="gray.200"
+                    onClick={handleClick}
+                  >
+                    <Text pr="1.5em">Analysis</Text>
+                  </Flex>
+                </Link>
+              ) : ("")
+            }
         </Box>
       </Flex>
     </div>
