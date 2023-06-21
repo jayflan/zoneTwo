@@ -1,6 +1,7 @@
 import React from "react";
 import * as d3 from "d3";
 import { useD3 } from "../_hooks/useD3";
+import { useSelector } from "react-redux";
 
 const AreaChart = (props) => {
 
@@ -29,7 +30,7 @@ const AreaChart = (props) => {
         currElem.distance = currElem.distance / 1.60934;  // convert to miles
       };
       if(currElem.speed !== 0) {
-        currElem.speed = currElem.speed / 1.60934; // convert to mph
+        currElem.speed = currElem.speed * 2.23694; // convert to mph
       };
       if(currElem.ele !== 0) {
         currElem.ele = currElem.ele * 3.28084; // convert to feet
@@ -59,10 +60,7 @@ const AreaChart = (props) => {
       
       const yScale = d3
       .scaleLinear()
-      .domain([
-        d3.min(newGpxData, (d) => parseFloat(d[targetProp])),
-        d3.max(newGpxData, (d) => parseFloat(d[targetProp]))
-      ])
+      .domain([d3.min(newGpxData, (d) => parseFloat(d[targetProp])), 150])
       .range([height - margin.bottom, margin.top])
       ;
 
@@ -80,7 +78,7 @@ const AreaChart = (props) => {
       .attr('class', 'area')
       .attr('fill', '#A6E8F2')
       // .attr('stroke', '#147F90') // turned off
-      // .attr('stroke-width', '0.5px') // turned off
+      // .attr('stroke-width', '2px') // turned off
       .attr('fill', '#A6E8F2')
       ;
       
@@ -134,10 +132,6 @@ const AreaChart = (props) => {
            return userUnitDist  === "miles" ? "mi" : "km"; 
         };
 
-        const displayMphOrKph = (userUnitDist) => {
-          return userUnitDist  === "miles" ? "mph" : "kph"; 
-       };
-
         const displayFtorMtr = (userUnitDist) => {
           return userUnitDist  === "miles" ? "ft" : "m"; 
        };
@@ -168,7 +162,7 @@ const AreaChart = (props) => {
         .text(`Dist: ${mouseDistance.toFixed(2)} ${displayMiorKm(userUnitDist)}`)
         ;
 
-        svg.selectAll('.hoverTextElev')
+        svg.selectAll('.hoverTextCad')
         .attr('x', xScale(mouseDistance))
         .attr('y', yScale(mouseYAxis))
         .attr('dx', hoverTextX)
@@ -176,19 +170,8 @@ const AreaChart = (props) => {
         .attr('dy', '-1.5em')
         .attr('fill', '#147F90')
         .style('text-anchor', hoverTextAnchor)
-        .text(`Speed: ${newGpxData[xIndex][targetProp].toFixed(0)} ${displayMphOrKph(userUnitDist)}`)
+        .text(`Cadence: ${parseInt(newGpxData[xIndex][targetProp])}`)
         ;
-
-        // svg.selectAll('.hoverTextGrade')
-        // .attr('x', xScale(mouseDistance))
-        // .attr('y', yScale(mouseYAxis))
-        // .attr('dx', hoverTextX)
-        // .attr('font-size', '0.9em')
-        // .attr('dy', '-0.5em')
-        // .attr('fill', '#147F90')
-        // .style('text-anchor', hoverTextAnchor)
-        // .text(`Grade(Beta): ${newGpxData[xIndex].grade.toFixed(1)}`)
-        // ;
 
       };
       
@@ -204,7 +187,7 @@ const AreaChart = (props) => {
       ;
       
       const yAxis = d3.axisLeft()
-      .tickFormat(d => `${d} ${userUnitDist === "miles" ? "mph" : "kph"}`)
+      .tickFormat(d => `${d} rpm`)
       .scale(yScale);
       // position yAxis on chart
       svg.append('g')
@@ -213,7 +196,7 @@ const AreaChart = (props) => {
       ;
 
 
-      // create a group of y axis labels that display a title for elevation with the current mouse pointer data below the title
+      // create a group of y axis labels that display a title for heart rate with the current mouse pointer data below the title
       const yAxisTitle = svg.append('g')
       .attr('class', 'y-axis-title')
       .attr('transform', `translate(${margin.left},${margin.top})`)
@@ -226,17 +209,18 @@ const AreaChart = (props) => {
       .attr('y', 100)
       .attr('font-size', '1em')
       .style('fill', '#147F90')
-      .text('Speed')
+      .text('Cadence')
       ;
 
       const getMaxValueArrayIndex = (array, objProp) => {
         let maxValue = 0;
         let maxIndex = 0;
         array.forEach((d, i) => {
-          if (d[objProp] > maxValue) {
-            maxValue = d[objProp];
+          const currNum = d[objProp] * 1;
+          if (currNum > maxValue) {
+            maxValue = currNum;
             maxIndex = i;
-          }
+          };
         });
         return maxIndex;
       };
@@ -245,8 +229,9 @@ const AreaChart = (props) => {
         let minValue = array[0][objProp];
         let minIndex = 0;
         array.forEach((d, i) => {
-          if (d[objProp] < minValue) {
-            minValue = d[objProp];
+          const currNum = d[objProp] * 1
+          if (currNum < minValue) {
+            minValue = currNum
             minIndex = i;
           }
         });
@@ -262,7 +247,10 @@ const AreaChart = (props) => {
       .attr('dy', '1.5em')
       .style('fill', '#147F90')
         //display max y-axis value
-      .text(`${newGpxData.length > 0 ? `Max ${newGpxData[getMaxValueArrayIndex(newGpxData, `${targetProp}`)][targetProp].toFixed(0)}` : ""}`)
+      .text(
+        `${newGpxData.length > 0 
+          ? `Max ${parseInt(newGpxData[getMaxValueArrayIndex(newGpxData, `${targetProp}`)][targetProp])}` 
+          : ""}`)
       ;
 
       yAxisTitle.append('text')
@@ -274,7 +262,9 @@ const AreaChart = (props) => {
       .attr('dy', '2.8em')
       .style('fill', '#147F90')
         //display min y-axis value
-      .text(`${newGpxData.length > 0 ? `Min ${newGpxData[getMinValueArrayIndex(newGpxData, `${targetProp}`)][targetProp].toFixed(0)}` : ""}`)
+      .text(`${newGpxData.length > 0 
+        ? `Min ${parseInt(newGpxData[getMinValueArrayIndex(newGpxData, `${targetProp}`)][targetProp])}` 
+        : ""}`)
       ;
 
 
@@ -304,7 +294,7 @@ const AreaChart = (props) => {
       svg.append("text").classed('hoverTextTime', true);
       svg.append("text").classed('hoverTextDist', true);
       svg.append("text").classed('hoverTextDist', true);
-      svg.append("text").classed('hoverTextElev', true);
+      svg.append("text").classed('hoverTextCad', true);
       svg.append("text").classed('hoverTextGrade', true);
 
       svg.append('rect')
@@ -328,7 +318,7 @@ const AreaChart = (props) => {
         svg.selectAll('.hoverTextDist')
         .attr('fill', 'transparent')
         ;
-        svg.selectAll('.hoverTextElev')
+        svg.selectAll('.hoverTextCad')
         .attr('fill', 'transparent')
         ;
         svg.selectAll('.hoverTextGrade')

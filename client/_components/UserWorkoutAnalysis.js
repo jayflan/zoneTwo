@@ -17,6 +17,8 @@ import Map from "./Map";
 import AreaChartElev from "./AreaChartElev";
 import AreaChartHR from "./AreaChartHR";
 import AreaChartSpeed from "./AreaChartSpeed";
+import { DateTime } from "../_functions/logicFrontend";
+import AreaChartCadence from "./AreaChartCadence";
 
 const UserWorkoutOverview = (props) => {
 
@@ -39,14 +41,16 @@ const UserWorkoutOverview = (props) => {
 
   // const userDistUnit = user?.distUnit;
   
+  
+  //<------------------------------ evaluations ------------------------------>//
+  
   let startTime = ""; // timestamp creation
   let firstTrkPt = singleWorkout?.data;
   firstTrkPt ? firstTrkPt = firstTrkPt[0] : "";
   firstTrkPt ? startTime = firstTrkPt.time : "";
-  // const dateTime = new DateTime(startTime);
-  // const workoutTimeStamp = `${dateTime.monthName()} ${dateTime.dateNum()}, ${dateTime.dateFullYear()} at ${dateTime.dateTime()}`;
-
-  //<------------------------------ componentDidMount ------------------------------>//
+  const dateTime = new DateTime(startTime);
+  const workoutTimeStamp = `${dateTime.monthName()} ${dateTime.dateNum()}, ${dateTime.dateFullYear()} at ${dateTime.dateTime()}`;
+  
   //<------------------------------ event & error handling ------------------------------>//
 
   return(
@@ -71,9 +75,28 @@ const UserWorkoutOverview = (props) => {
               }
             </Box>
             <Box border="1px" borderColor="gray.200">
-              <AreaChartElev userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "ele" }/>
-              <AreaChartHR userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "hr" }/>
-              <AreaChartSpeed userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "speed" }/>
+              {/* Display charts based on if data exists in first trackpoint */}
+              
+              {
+                firstTrkPt?.ele ? (
+                  <AreaChartElev userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "ele" }/>
+                ) : ("")
+              }
+              {
+                firstTrkPt?.hr ? (
+                  <AreaChartHR userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "hr" }/>
+                ) : ("")
+              }
+              {
+                firstTrkPt?.speed ? (
+                  <AreaChartSpeed userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "speed" }/>
+                ) : ("")
+              }
+              {
+                firstTrkPt?.cad ? (
+                  <AreaChartCadence userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "cad" }/>
+                ) : ("")
+              }
             </Box>
           </Box>
         </Flex>

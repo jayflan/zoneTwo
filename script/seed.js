@@ -76,6 +76,7 @@ async function seed() {
 
   //create NEW gpxWorkout array of objs w/ appended data via special functions
   let gpxOutputDataMtn = JSON.parse(JSON.stringify(gpxMtnWorkout.data));
+  let gpxOutputDataRd = JSON.parse(JSON.stringify(gpxRdWorkout.data));
   
 
   const appendDistCalcs = (origArr, dataArr) => {
@@ -124,6 +125,10 @@ async function seed() {
     return newArr;
   };
 
+  gpxOutputDataRd = appendDistCalcs(gpxOutputDataRd, roadDistance.distArr);
+  gpxOutputDataRd = appendSpeedCalcs(gpxOutputDataRd, roadSpeedArrKph);
+  gpxOutputDataRd = appendElevGrade(gpxOutputDataRd);
+  
   gpxOutputDataMtn = appendDistCalcs(gpxOutputDataMtn, mtnDistance.distArr);
   gpxOutputDataMtn = appendSpeedCalcs(gpxOutputDataMtn, mtnSpeedArrKph);
   gpxOutputDataMtn = appendElevGrade(gpxOutputDataMtn);
@@ -140,7 +145,7 @@ async function seed() {
         time: mtnTime, hrAvg: mtnHrAvg, hrMax: mtnHrMax, cadAvg: mtnCadAvg, cadMax: mtnCadMax, tempAvg: mtnTempAvg,
         speedAvg: mtnSpeedAvg, speedMax: mtnSpeedMax, date: dateMtnWorkout}),
     Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', date: dateRdWorkout,
-      data: gpxRdWorkout.data, userId: murphy.id, distance: roadDistanceTotal, elevation: roadElevation, 
+      data: gpxOutputDataRd, userId: murphy.id, distance: roadDistanceTotal, elevation: roadElevation, 
         time: roadTime, hrAvg: roadHrAvg, hrMax: roadHrMax, cadAvg: roadCadAvg, cadMax: roadCadMax, tempAvg: roadTempAvg,
         speedAvg: roadSpeedAvg, speedMax: roadSpeedMax, date: dateRdWorkout}),
     Workout.create({name: gpxMtnWorkout.name, description: 'Best workout ever', date: dateMtnWorkout,
@@ -148,7 +153,7 @@ async function seed() {
         time: mtnTime, hrAvg: mtnHrAvg, hrMax: mtnHrMax, cadAvg: mtnCadAvg, cadMax: mtnCadMax, tempAvg: mtnTempAvg,
         speedAvg: mtnSpeedAvg, speedMax: mtnSpeedMax, date: dateMtnWorkout}),
     Workout.create({name: gpxRdWorkout.name, description: 'Best workout ever', date: dateRdWorkout,
-      data: gpxRdWorkout.data, userId: cody.id, distance: roadDistanceTotal, elevation: roadElevation, 
+      data: gpxOutputDataRd, userId: cody.id, distance: roadDistanceTotal, elevation: roadElevation, 
         time: roadTime, hrAvg: roadHrAvg, hrMax: roadHrMax, cadAvg: roadCadAvg, cadMax: roadCadMax, tempAvg: roadTempAvg,
         speedAvg: roadSpeedAvg, speedMax: roadSpeedMax, date: dateRdWorkout})
   ]);

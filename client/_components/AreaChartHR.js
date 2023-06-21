@@ -60,7 +60,10 @@ const AreaChart = (props) => {
       
       const yScale = d3
       .scaleLinear()
-      .domain([d3.min(newGpxData, (d) => parseFloat(d[targetProp])), 220])
+      .domain([
+        d3.min(newGpxData, (d) => parseFloat(d[targetProp])), 
+        d3.max(newGpxData, (d) => parseFloat(d[targetProp])) + 10, 
+        ])
       .range([height - margin.bottom, margin.top])
       ;
 
@@ -216,8 +219,9 @@ const AreaChart = (props) => {
         let maxValue = 0;
         let maxIndex = 0;
         array.forEach((d, i) => {
-          if (d[objProp] > maxValue) {
-            maxValue = d[objProp];
+          const currNum = d[objProp] * 1
+          if (currNum > maxValue) {
+            maxValue = currNum;
             maxIndex = i;
           }
         });
@@ -228,8 +232,9 @@ const AreaChart = (props) => {
         let minValue = array[0][objProp];
         let minIndex = 0;
         array.forEach((d, i) => {
-          if (d[objProp] < minValue) {
-            minValue = d[objProp];
+          const currNum = d[objProp] * 1
+          if (currNum < minValue) {
+            minValue = currNum;
             minIndex = i;
           }
         });
@@ -247,7 +252,7 @@ const AreaChart = (props) => {
         //display max y-axis value
       .text(
         `${newGpxData.length > 0 
-          ? `Max ${parseInt(newGpxData[getMaxValueArrayIndex(newGpxData, `${targetProp}`)][targetProp]).toFixed(0)}` 
+          ? `Max ${parseInt(newGpxData[getMaxValueArrayIndex(newGpxData, `${targetProp}`)][targetProp])}` 
           : ""}`)
       ;
 
@@ -261,7 +266,7 @@ const AreaChart = (props) => {
       .style('fill', '#147F90')
         //display min y-axis value
       .text(`${newGpxData.length > 0 
-        ? `Min ${parseInt(newGpxData[getMinValueArrayIndex(newGpxData, `${targetProp}`)][targetProp]).toFixed(0)}` 
+        ? `Min ${parseInt(newGpxData[getMinValueArrayIndex(newGpxData, `${targetProp}`)][targetProp])}` 
         : ""}`)
       ;
 

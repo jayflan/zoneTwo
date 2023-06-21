@@ -1,5 +1,5 @@
 import React from "react";
-import { render, rerender, cleanup, screen, fireEvent, getByRole, getByTestId, waitFor } from "@testing-library/react";
+import { render, rerender, cleanup, screen, fireEvent, findByRole, getByRole, getByTestId, waitFor } from "@testing-library/react";
 import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import history from "../../history";
 import { Provider } from "react-redux";
@@ -17,6 +17,7 @@ const mockStore = configureStore([thunk]);
 const store = mockStore({
   singleWorkout: {
     id: 'workout-id',
+    data: [{ lat: 28 }]
   },
 });
 
@@ -33,11 +34,15 @@ describe('PageNav', () => {
     );
     
     const overviewBtn = screen.getByRole('button',{ name: /overview/i});
-    const analysisBtn = screen.getByRole('button', { name: /analysis/i});
+    const analysisBtn = screen.queryByRole('button', { name: /analysis/i});
     
     //assert that Overview button is active
     expect(overviewBtn.classList.contains('btn-active')).to.be.true;
-    expect(analysisBtn.classList.contains('btn-active')).to.not.be.true;
+    // include analysis if button is displayed due to type of workout
+    analysisBtn ? (
+      expect(analysisBtn.classList.contains('btn-active')).to.not.be.true
+    ) : ("");
+    
   });
   
 

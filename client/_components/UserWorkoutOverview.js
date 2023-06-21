@@ -119,16 +119,24 @@ const UserWorkoutOverview = (props) => {
                 </Container>
               </Box>
             </Flex>
-            <Box mt={6} border="1px" borderBottom="0px" borderColor="gray.200">
-              {/* Dispaly map if data latitude point exists */}
+            
+            
+              {/* Display map if data latitude point exists */}
               {
                 firstTrkPt?.lat ? (
-                  <Map workout={ singleWorkout }/>
+                  <Box mt={6} border="1px" borderBottom="0px" borderColor="gray.200">
+                    <Map workout={ singleWorkout }/>
+                  </Box>
                 ) : ("")
               }
-            </Box>
+
             <Box border="1px" borderColor="gray.200">
-              <AreaChartElev userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "ele" }/>
+              {/* Display elevation chart if data latitude point exists */}
+              {
+                firstTrkPt?.lat ? (
+                  <AreaChartElev userInfo={ user } singleWorkout={ singleWorkout } targetProp={ "ele" }/>
+                ) : ("")
+              }
             </Box>
           </Box>
         </Flex>

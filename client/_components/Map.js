@@ -28,6 +28,7 @@ const Map = (props) => {
 
   return(
     <MapContainer
+    className="container-map"
       center={[firstTrkPtLat, firstTrkPtLon]}
       scrollWheelZoom={false}
       style={{height: "300px", zIndex: 0}}
