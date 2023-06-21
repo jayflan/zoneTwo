@@ -81,6 +81,7 @@ const AreaChart = (props) => {
       .attr('fill', '#A6E8F2')
       // .attr('stroke', '#147F90') // turned off
       // .attr('stroke-width', '0.5px') // turned off
+      .attr('fill', '#A6E8F2')
       ;
       
 
